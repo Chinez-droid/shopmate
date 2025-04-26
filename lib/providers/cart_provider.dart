@@ -1,0 +1,61 @@
+import 'package:flutter/material.dart';
+import '../models/cart_item.dart';
+
+class CartProvider with ChangeNotifier {
+  Map<String, CartItem> _items = {};
+  
+  Map<String, CartItem> get items {
+    return {..._items};
+  }
+
+  int get itemCount {
+    return _items.length;
+  }
+
+  double get totalAmount {
+    double total = 0.0;
+    _items.forEach((key, cartItem) {
+      total += cartItem.price * cartItem.quantity;
+    });
+    return total;
+  }
+
+  void addItem(String productId, String productName, double price, String addedBy) {
+    if (_items.containsKey(productId)) {
+      // Update existing item quantity
+      _items.update(
+        productId,
+        (existingCartItem) => CartItem(
+          productId: existingCartItem.productId,
+          productName: existingCartItem.productName,
+          price: existingCartItem.price,
+          quantity: existingCartItem.quantity + 1,
+          addedBy: existingCartItem.addedBy,
+        ),
+      );
+    } else {
+      // Add new item
+      _items.putIfAbsent(
+        productId,
+        () => CartItem(
+          productId: productId,
+          productName: productName,
+          price: price,
+          quantity: 1,
+          addedBy: addedBy,
+        ),
+      );
+    }
+    notifyListeners();
+  }
+
+  void removeItem(String productId) {
+    _items.remove(productId);
+    notifyListeners();
+  }
+
+  void clear() {
+    _items = {};
+    notifyListeners();
+  }
+}
