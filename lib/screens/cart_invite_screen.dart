@@ -145,8 +145,10 @@ class _CartInviteScreenState extends State<CartInviteScreen> {
                     ),
                     ElevatedButton.icon(
                       onPressed: () {
+                        // Simulate an email address
+                        final String mockEmail = 'friend@gmail.com';
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Invite sent to friend')),
+                          SnackBar(content: Text('Email sent to $mockEmail')),
                         );
                       },
                       icon: const Icon(Icons.share),

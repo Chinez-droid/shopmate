@@ -54,34 +54,16 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(height: 12),
                       OutlinedButton.icon(
                         onPressed: () {
-                          // Simulate opening from an invite link
-                          final mockInviteLink = 'app://shop/session/${faker.guid.guid()}';
-                          
                           // Set a random name if none exists yet
                           if (sessionProvider.currentUserName.isEmpty) {
                             sessionProvider.setCurrentUserName(faker.person.firstName());
                           }
                           
-                          // Show a dialog to simulate clicking on an invite link
-                          showDialog(
-                            context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: const Text('Simulating Invite Link'),
-                              content: Text('Opening link: $mockInviteLink'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(ctx).pop();
-                                    context.router.push(const InviteLandingRoute());
-                                  },
-                                  child: const Text('Open'),
-                                ),
-                              ],
-                            ),
-                          );
+                          // Navigate directly to the invite landing page
+                          context.router.push(const InviteLandingRoute());
                         },
                         icon: const Icon(Icons.link),
-                        label: const Text('Join via Invite Link'),
+                        label: const Text('Join as Friend'),
                       ),
                     ],
                   ),
