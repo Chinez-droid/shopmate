@@ -1,7 +1,7 @@
-// lib/screens/invite_landing_page.dart
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:provider/provider.dart';
+import 'package:faker/faker.dart';
 import '../providers/session_provider.dart';
 import '../routes/app_router.dart';
 
@@ -14,11 +14,22 @@ class InviteLandingPage extends StatefulWidget {
 }
 
 class _InviteLandingPageState extends State<InviteLandingPage> {
-  final _sessionIdController = TextEditingController();
+  final _friendNameController = TextEditingController();
+  late String _inviterName;
+  late String _sessionId;
+  
+  @override
+  void initState() {
+    super.initState();
+    // Generate random data with Faker
+    final faker = Faker();
+    _inviterName = faker.person.firstName();
+    _sessionId = faker.guid.guid();
+  }
   
   @override
   void dispose() {
-    _sessionIdController.dispose();
+    _friendNameController.dispose();
     super.dispose();
   }
   
@@ -35,45 +46,56 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'Your friend has invited you to shop together!',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30),
-            TextField(
-              controller: _sessionIdController,
-              decoration: const InputDecoration(
-                labelText: 'Enter Session ID or Paste Link',
-                border: OutlineInputBorder(),
-                hintText: 'app://shop/session/xyz123',
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.shopping_cart,
+                    size: 64,
+                    color: Colors.blue,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Your friend/family is inviting you to shop',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    '$_inviterName has invited you to join their shopping cart!',
+                    style: const TextStyle(fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 20),
-            const Text(
-              'Your Name:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            const SizedBox(height: 30),
+            
+            TextField(
+              controller: _friendNameController,
+              decoration: const InputDecoration(
+                labelText: 'Your Name',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.person),
+              ),
             ),
-            const SizedBox(height: 10),
-            Text(
-              sessionProvider.currentUserName,
-              style: const TextStyle(fontSize: 18),
-            ),
+            
             const SizedBox(height: 40),
+            
             ElevatedButton(
               onPressed: () {
-                if (_sessionIdController.text.isNotEmpty) {
-                  // Extract session ID from the full link if needed
-                  String sessionId = _sessionIdController.text;
-                  if (sessionId.contains('app://shop/session/')) {
-                    sessionId = sessionId.split('app://shop/session/')[1];
-                  }
-                  
-                  sessionProvider.joinSession(sessionId, sessionProvider.currentUserName);
+                if (_friendNameController.text.isNotEmpty) {
+                  sessionProvider.setCurrentUserName(_friendNameController.text);
+                  sessionProvider.joinSession(_sessionId, _friendNameController.text);
                   context.router.push(const ProductListRoute());
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter a session ID or link')),
+                    const SnackBar(content: Text('Please enter your name')),
                   );
                 }
               },
@@ -83,6 +105,15 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: const Text('Start Shopping', style: TextStyle(fontSize: 18)),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            TextButton(
+              onPressed: () {
+                context.router.pop();
+              },
+              child: const Text('Cancel'),
             ),
           ],
         ),

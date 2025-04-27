@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+import 'package:faker/faker.dart';
 import '../models/session.dart';
 
 class SessionProvider with ChangeNotifier {
@@ -7,6 +8,7 @@ class SessionProvider with ChangeNotifier {
   final List<ShoppingSession> _pastSessions = [];
   String _currentUserName = '';
   bool _isCreator = true;
+  final Faker _faker = Faker();
 
   ShoppingSession? get currentSession => _currentSession;
   List<ShoppingSession> get pastSessions => [..._pastSessions];
@@ -38,10 +40,12 @@ class SessionProvider with ChangeNotifier {
 
   bool joinSession(String sessionId, String friendName) {
     // In a real app, you would verify the session exists in a database
-    // For this demo, we'll simulate a valid join
+    // For this demo, we'll simulate a session with a randomly generated creator name
+    final creatorName = _faker.person.firstName();
+    
     _currentSession = ShoppingSession(
       sessionId: sessionId,
-      creatorName: 'Original Creator', // In a real app, fetch this
+      creatorName: creatorName,
       friendName: friendName,
     );
     
@@ -66,5 +70,51 @@ class SessionProvider with ChangeNotifier {
       throw Exception('No active session');
     }
     return 'app://shop/session/${_currentSession!.sessionId}';
+  }
+  
+  // Add mock past sessions for the home screen using Faker
+  List<ShoppingSession> getMockSessions() {
+    final List<ShoppingSession> mockSessions = [];
+    
+    // Generate 3-5 random mock sessions
+    final sessionCount = 3 + _faker.randomGenerator.integer(3); // 3 to 5 sessions
+    
+    for (int i = 0; i < sessionCount; i++) {
+      final bool isActive = _faker.randomGenerator.boolean();
+      final bool hasFriend = _faker.randomGenerator.boolean();
+      final String sessionName = _generateSessionName();
+      
+      mockSessions.add(ShoppingSession(
+        sessionId: const Uuid().v4(),
+        creatorName: _currentUserName.isEmpty ? _faker.person.firstName() : _currentUserName,
+        friendName: hasFriend ? _faker.person.firstName() : null,
+        isActive: isActive,
+        createdAt: DateTime.now().subtract(Duration(
+          days: _faker.randomGenerator.integer(7),
+          hours: _faker.randomGenerator.integer(24),
+        )),
+        name: sessionName, // Use the sessionName variable here
+      ));
+    }
+    
+    return mockSessions;
+  }
+  
+  // Helper to generate realistic shopping session names
+  String _generateSessionName() {
+    final sessionTypes = [
+      'Grocery Shopping',
+      'Weekly Shopping',
+      'Birthday Gift',
+      'Home Essentials',
+      'Office Supplies',
+      'Weekend Supplies',
+      'Party Shopping',
+      'Holiday Shopping',
+      'Back to School',
+      'Tech Gadgets'
+    ];
+    
+    return sessionTypes[_faker.randomGenerator.integer(sessionTypes.length)];
   }
 }

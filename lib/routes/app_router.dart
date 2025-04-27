@@ -6,10 +6,10 @@ import '../screens/product_list_screen.dart';
 import '../screens/shared_cart_screen.dart';
 import '../screens/confirmation_screen.dart';
 
-part 'app_router.gr.dart'; // Ensure this line exists
+part 'app_router.gr.dart'; // This links to the generated file
 
 @AutoRouterConfig()
-class AppRouter extends _$AppRouter { // Make sure it extends _$AppRouter
+class AppRouter extends RootStackRouter { // It MUST extend _$AppRouter
 
   @override
   List<AutoRoute> get routes => [

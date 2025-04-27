@@ -1,4 +1,3 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/products_provider.dart';
@@ -12,8 +11,8 @@ void main() {
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
-
-  final appRouter = AppRouter();
+  
+  final _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +34,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           useMaterial3: true,
         ),
-        // This is correct if AppRouter extends _$AppRouter and build_runner succeeded
-        routerConfig: appRouter,
+        routerConfig: _appRouter.config(),
       ),
     );
   }
