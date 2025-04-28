@@ -203,21 +203,6 @@ class SessionCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (isActive)
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: kFadedPurple,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_forward_ios, size: 16),
-                        color: kPurpleColor,
-                        onPressed: onTap,
-                        padding: EdgeInsets.zero,
-                      ),
-                    ),
                 ],
               ),
               const SizedBox(height: 16),

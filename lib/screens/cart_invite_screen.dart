@@ -4,6 +4,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:provider/provider.dart';
 import '../providers/session_provider.dart';
 import '../routes/app_router.dart';
+import '../utils/constants.dart';
+import '../widgets/custom_widgets.dart';
 
 @RoutePage()
 class CartInviteScreen extends StatefulWidget {
@@ -62,168 +64,301 @@ class _CartInviteScreenState extends State<CartInviteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Shopping Cart')),
+      backgroundColor: kPrimaryColor,
+      appBar: AppBar(
+        title: const Text(
+          'Create Shopping Cart',
+          style: TextStyle(
+            fontFamily: 'Raleway',
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            color: kWhiteColor,
+          ),
+        ),
+        backgroundColor: kPurpleColor,
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (!_sessionCreated) ...[
-                // Session creation form
-                const Text(
-                  'Create a new shopping session',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Header gradient container (similar to home screen)
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [kPurpleColor, kPurpleColor.withValues(alpha: 0.0)],
+                  stops: const [0.0, 1.0],
                 ),
-                const SizedBox(height: 20),
-                TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Your Name',
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.person),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Center(
-                  child: ElevatedButton.icon(
-                    onPressed: _createSession,
-                    icon: const Icon(Icons.add_shopping_cart),
-                    label: const Text('Create Session'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 12,
-                      ),
+              ),
+              padding: const EdgeInsets.only(
+                left: kDefaultPadding,
+                right: kDefaultPadding,
+                top: kDefaultPadding,
+                bottom: 40,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    !_sessionCreated 
+                        ? 'Create a new\nshopping session' 
+                        : 'Share with friends\nand family',
+                    style: kHeadingTextStyle.copyWith(
+                      color: kWhiteColor,
+                      height: 1.2,
                     ),
                   ),
-                ),
-              ] else ...[
-                // Session created, show sharing options
-                Text(
-                  'Hi, ${_nameController.text}!',
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'Your cart session is ready to share with friends and family:',
-                  style: TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.grey[100],
+                  const SizedBox(height: 8),
+                  Text(
+                    !_sessionCreated 
+                        ? 'Set up a cart to shop together'
+                        : 'Invite others to join your shopping cart',
+                    style: kBodyTextStyle.copyWith(
+                      color: kWhiteColor.withValues(alpha: 0.9),
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          _inviteLink,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                ],
+              ),
+            ),
+            
+            // Main content
+            Padding(
+              padding: const EdgeInsets.all(kDefaultPadding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (!_sessionCreated) ...[
+                    // Session creation card
+                    Card(
+                      elevation: 4,
+                      margin: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(kCardBorderRadius),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.copy),
-                        onPressed: () {
-                          Clipboard.setData(ClipboardData(text: _inviteLink));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Link copied to clipboard'),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Your Information',
+                              style: kTitleTextStyle,
                             ),
-                          );
-                        },
-                        tooltip: 'Copy link',
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Invitation Stats
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Invitations',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Invitations sent:'),
-                            Text('$_inviteSent', style: const TextStyle(fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        // In a real app, you'd show how many have joined
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Friends joined:'),
-                            // This would be real data in a complete app
-                            Text(
-                              '${_inviteSent > 0 ? _inviteSent - 1 : 0}',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            const SizedBox(height: 16),
+                            TextField(
+                              controller: _nameController,
+                              decoration: const InputDecoration(
+                                labelText: 'Your Name',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.person),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Center(
+                              child: PrimaryButton(
+                                text: 'Create Session',
+                                onPressed: _createSession,
+                                icon: Icons.add_shopping_cart,
+                                isFullWidth: true,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Center(
+                              child: Text(
+                                'This will create a cart you can share with others',
+                                style: kCaptionTextStyle,
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
+                  ] else ...[
+                    // Session created, show sharing options
+                    Card(
+                      elevation: 4,
+                      margin: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(kCardBorderRadius),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: kFadedPurple,
+                                  child: Icon(
+                                    Icons.person,
+                                    color: kPurpleColor,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Hi, ${_nameController.text}!',
+                                      style: kTitleTextStyle,
+                                    ),
+                                    const Text(
+                                      'Your cart session is ready',
+                                      style: kCaptionTextStyle,
+                                    ),
+                                  ],
+                                ),
+                                const Spacer(),
+                                StatusBadge(
+                                  text: 'Active',
+                                  isActive: true,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              'Invite Link',
+                              style: kSubheadingTextStyle,
+                            ),
+                            const SizedBox(height: 10),
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: kGreyColor2),
+                                borderRadius: BorderRadius.circular(kButtonBorderRadius),
+                                color: Colors.grey[100],
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      _inviteLink,
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.copy, color: kPurpleColor),
+                                    onPressed: () {
+                                      Clipboard.setData(ClipboardData(text: _inviteLink));
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Link copied to clipboard'),
+                                        ),
+                                      );
+                                    },
+                                    tooltip: 'Copy link',
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 24),
 
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Clipboard.setData(ClipboardData(text: _inviteLink));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Link copied to clipboard')),
-                        );
-                      },
-                      icon: const Icon(Icons.copy),
-                      label: const Text('Copy Link'),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: _sendInvite,
-                      icon: const Icon(Icons.share),
-                      label: const Text('Send Invite'),
+                            // Invitation Stats
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(kButtonBorderRadius),
+                                color: kFadedPurple,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Invitation Status',
+                                    style: kTitleTextStyle.copyWith(
+                                      color: kPurpleColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.send, size: 16, color: kPurpleColor),
+                                          const SizedBox(width: 8),
+                                          const Text('Invitations sent:'),
+                                        ],
+                                      ),
+                                      Text(
+                                        '$_inviteSent', 
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  // In a real app, you'd show how many have joined
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.group, size: 16, color: kPurpleColor),
+                                          const SizedBox(width: 8),
+                                          const Text('Friends joined:'),
+                                        ],
+                                      ),
+                                      // This would be real data in a complete app
+                                      Text(
+                                        '${_inviteSent > 0 ? _inviteSent - 1 : 0}',
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(height: 24),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: SecondaryButton(
+                                    text: 'Copy Link',
+                                    onPressed: () {
+                                      Clipboard.setData(ClipboardData(text: _inviteLink));
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Link copied to clipboard')),
+                                      );
+                                    },
+                                    icon: Icons.copy,
+                                    isFullWidth: true,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: PrimaryButton(
+                                    text: 'Send Invite',
+                                    onPressed: _sendInvite,
+                                    icon: Icons.share,
+                                    isFullWidth: true,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 32),
+                            PrimaryButton(
+                              text: 'Start Shopping',
+                              onPressed: () {
+                                context.router.push(const ProductListRoute());
+                              },
+                              icon: Icons.shopping_bag_outlined,
+                              isFullWidth: true,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 40),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.router.push(const ProductListRoute());
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 12,
-                      ),
-                    ),
-                    child: const Text('Start Shopping'),
-                  ),
-                ),
-              ],
-            ],
-          ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

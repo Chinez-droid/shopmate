@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
     final faker = Faker();
     // Get mock sessions from provider
     final mockSessions = sessionProvider.getMockSessions();
-    
+
     return Scaffold(
       backgroundColor: kPrimaryColor,
       appBar: AppBar(
@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             // Main content
             Padding(
               padding: const EdgeInsets.all(kDefaultPadding),
@@ -97,7 +97,9 @@ class HomeScreen extends StatelessWidget {
                             onPressed: () {
                               // Set a random name if none exists yet
                               if (sessionProvider.currentUserName.isEmpty) {
-                                sessionProvider.setCurrentUserName(faker.person.firstName());
+                                sessionProvider.setCurrentUserName(
+                                  faker.person.firstName(),
+                                );
                               }
                               context.router.push(const CartInviteRoute());
                             },
@@ -110,9 +112,11 @@ class HomeScreen extends StatelessWidget {
                             onPressed: () {
                               // Set a random name if none exists yet
                               if (sessionProvider.currentUserName.isEmpty) {
-                                sessionProvider.setCurrentUserName(faker.person.firstName());
+                                sessionProvider.setCurrentUserName(
+                                  faker.person.firstName(),
+                                );
                               }
-                              
+
                               // Navigate directly to the invite landing page
                               context.router.push(const InviteLandingRoute());
                             },
@@ -123,17 +127,16 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   // Sessions section
-                  const SectionHeader(
-                    title: 'Your Shopping Sessions',
-                  ),
-                  
+                  const SectionHeader(title: 'Your Shopping Sessions'),
+
                   // Display mock sessions from provider
                   if (mockSessions.isEmpty)
                     const EmptyStateView(
                       icon: Icons.shopping_bag_outlined,
-                      message: 'No shopping sessions yet. Start a new session to invite friends and family!',
+                      message:
+                          'No shopping sessions yet. Start a new session to invite friends and family!',
                     )
                   else
                     ListView.builder(
@@ -144,17 +147,17 @@ class HomeScreen extends StatelessWidget {
                         final session = mockSessions[index];
                         return SessionCard(
                           title: session.name,
-                          creatorName: session.creatorName == sessionProvider.currentUserName 
-                              ? 'Created by you' 
-                              : session.creatorName,
+                          creatorName:
+                              session.creatorName ==
+                                      sessionProvider.currentUserName
+                                  ? 'Created by you'
+                                  : session.creatorName,
                           isActive: session.isActive,
                           createdAt: session.createdAt,
                           participantCount: session.participants.length,
-                          onTap: () {
-                            if (session.isActive) {
-                              context.router.push(const ProductListRoute());
-                            }
-                          },
+                          // Remove the onTap property or set it to null
+                          onTap:
+                              () {}, // Empty callback to make card selectable but do nothing
                         );
                       },
                     ),
