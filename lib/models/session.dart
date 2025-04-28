@@ -1,17 +1,20 @@
+// Updated ShoppingSession class
 class ShoppingSession {
   final String sessionId;
   final String creatorName;
-  String? friendName;
+  List<String> participants; // Replace friendName with a list of participants
   bool isActive;
   DateTime createdAt;
-  String name; // Added name property
+  String name;
 
   ShoppingSession({
     required this.sessionId,
     required this.creatorName,
-    this.friendName,
+    List<String>? participants, // Optional list of participants
     this.isActive = true,
     DateTime? createdAt,
-    this.name = 'Shopping Session', // Default value
-  }) : createdAt = createdAt ?? DateTime.now();
+    this.name = 'Shopping Session',
+  }) : 
+    participants = participants ?? [], // Initialize empty list if not provided
+    createdAt = createdAt ?? DateTime.now();
 }

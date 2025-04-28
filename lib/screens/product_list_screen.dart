@@ -26,8 +26,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
   
   void _generateProducts() {
-    // Generate 15 random products using Faker
-    for (int i = 0; i < 15; i++) {
+    // Generate 20 random products using Faker (increased from 15)
+    for (int i = 0; i < 20; i++) {
       final id = 'p${i + 1}';
       final name = _generateProductName();
       final price = double.parse((_faker.randomGenerator.decimal(scale: 100, min: 5)).toStringAsFixed(2));
@@ -91,6 +91,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
               IconButton(
                 icon: const Icon(Icons.shopping_cart),
                 onPressed: () {
+                  // Hide any existing snackbar before navigation
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   context.router.push(const SharedCartRoute());
                 },
               ),
@@ -139,6 +141,8 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
+          // Hide any existing snackbar before navigation
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
           context.router.push(const SharedCartRoute());
         },
         icon: const Icon(Icons.shopping_cart),
@@ -165,10 +169,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Added ${product.name} to cart'),
-              duration: const Duration(seconds: 2),
+              duration: const Duration(milliseconds: 1500), // Reduced from 2 seconds
               action: SnackBarAction(
                 label: 'VIEW CART',
                 onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   context.router.push(const SharedCartRoute());
                 },
               ),
@@ -236,7 +241,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Added ${product.name} to cart'),
-                              duration: const Duration(seconds: 2),
+                              duration: const Duration(milliseconds: 1500), // Reduced from 2 seconds
                             ),
                           );
                         },

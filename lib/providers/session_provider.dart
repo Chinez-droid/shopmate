@@ -31,6 +31,7 @@ class SessionProvider with ChangeNotifier {
     _currentSession = ShoppingSession(
       sessionId: sessionId,
       creatorName: _currentUserName,
+      participants: [], // Initialize with empty list
     );
     
     _isCreator = true;
@@ -38,21 +39,68 @@ class SessionProvider with ChangeNotifier {
     return sessionId;
   }
 
-  bool joinSession(String sessionId, String friendName) {
+  bool joinSession(String sessionId, String participantName) {
     // In a real app, you would verify the session exists in a database
     // For this demo, we'll simulate a session with a randomly generated creator name
-    final creatorName = _faker.person.firstName();
+    // Get current session if it exists, or create a simulated one
+    ShoppingSession? sessionToJoin;
     
-    _currentSession = ShoppingSession(
-      sessionId: sessionId,
-      creatorName: creatorName,
-      friendName: friendName,
-    );
+    if (_currentSession != null && _currentSession!.sessionId == sessionId) {
+      // Session exists in this provider
+      sessionToJoin = _currentSession;
+    } else {
+      // Simulate an existing session
+      final creatorName = _faker.person.firstName();
+      sessionToJoin = ShoppingSession(
+        sessionId: sessionId,
+        creatorName: creatorName,
+        participants: [], // Start with empty list
+      );
+    }
     
-    _currentUserName = friendName;
+    // Add the participant to the session
+    sessionToJoin?.participants.add(participantName);
+    
+    _currentSession = sessionToJoin;
+    _currentUserName = participantName;
     _isCreator = false;
     notifyListeners();
     return true;
+  }
+
+  // Method to add a participant to current session
+  bool addParticipant(String participantName) {
+    if (_currentSession == null) {
+      return false;
+    }
+    
+    // Check if participant already exists
+    if (!_currentSession!.participants.contains(participantName)) {
+      _currentSession!.participants.add(participantName);
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+  
+  // Get all participants including the creator
+  List<String> getAllParticipants() {
+    if (_currentSession == null) {
+      return [];
+    }
+    
+    // Return creator and all participants
+    return [_currentSession!.creatorName, ..._currentSession!.participants];
+  }
+
+  // Get participant count (including creator)
+  int getParticipantCount() {
+    if (_currentSession == null) {
+      return 0;
+    }
+    
+    // Creator + participants
+    return 1 + _currentSession!.participants.length;
   }
 
   void leaveSession() {
@@ -81,19 +129,26 @@ class SessionProvider with ChangeNotifier {
     
     for (int i = 0; i < sessionCount; i++) {
       final bool isActive = _faker.randomGenerator.boolean();
-      final bool hasFriend = _faker.randomGenerator.boolean();
       final String sessionName = _generateSessionName();
+      
+      // Generate 0-3 random participants
+      final int participantCount = _faker.randomGenerator.integer(4); // 0 to 3
+      List<String> participants = [];
+      
+      for (int j = 0; j < participantCount; j++) {
+        participants.add(_faker.person.firstName());
+      }
       
       mockSessions.add(ShoppingSession(
         sessionId: const Uuid().v4(),
         creatorName: _currentUserName.isEmpty ? _faker.person.firstName() : _currentUserName,
-        friendName: hasFriend ? _faker.person.firstName() : null,
+        participants: participants,
         isActive: isActive,
         createdAt: DateTime.now().subtract(Duration(
           days: _faker.randomGenerator.integer(7),
           hours: _faker.randomGenerator.integer(24),
         )),
-        name: sessionName, // Use the sessionName variable here
+        name: sessionName,
       ));
     }
     

@@ -9,7 +9,7 @@ import '../screens/confirmation_screen.dart';
 part 'app_router.gr.dart'; // This links to the generated file
 
 @AutoRouterConfig()
-class AppRouter extends RootStackRouter { // It MUST extend _$AppRouter
+class AppRouter extends RootStackRouter { // It MUST extend RootStackRouter
 
   @override
   List<AutoRoute> get routes => [

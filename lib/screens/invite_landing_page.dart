@@ -16,6 +16,8 @@ class InviteLandingPage extends StatefulWidget {
 class _InviteLandingPageState extends State<InviteLandingPage> {
   final _friendNameController = TextEditingController();
   late String _sessionId;
+  String _creatorName = 'Your friend';
+  int _participantCount = 0;
   
   @override
   void initState() {
@@ -23,6 +25,18 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
     // Generate random session ID with Faker
     final faker = Faker();
     _sessionId = faker.guid.guid();
+    
+    // Use the actual session creator name if possible
+    final sessionProvider = Provider.of<SessionProvider>(context, listen: false);
+    if (sessionProvider.currentSession != null) {
+      _creatorName = sessionProvider.currentSession!.creatorName;
+      _participantCount = sessionProvider.currentSession!.participants.length;
+    } else {
+      // For a real app, we would retrieve session details here
+      // For now, generate a random creator name and participant count
+      _creatorName = faker.person.firstName();
+      _participantCount = faker.randomGenerator.integer(3); // 0-2 other participants
+    }
   }
   
   @override
@@ -34,13 +48,6 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
   @override
   Widget build(BuildContext context) {
     final sessionProvider = Provider.of<SessionProvider>(context);
-    // Use the sessionProvider's creator name
-    String inviterName = sessionProvider.currentUserName;
-    
-    // If for some reason the inviter name isn't set, use a fallback
-    if (inviterName.isEmpty) {
-      inviterName = 'Your friend';
-    }
     
     return Scaffold(
       appBar: AppBar(
@@ -67,16 +74,24 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'Your friend/family is inviting you to shop',
+                      'You\'ve been invited to a shopping session',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      '$inviterName has invited you to join their shopping cart!',
+                      '$_creatorName has invited you to join their shopping cart!',
                       style: const TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
+                    if (_participantCount > 0) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        '$_participantCount other ${_participantCount == 1 ? 'person is' : 'people are'} already shopping in this session',
+                        style: const TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ],
                 ),
               ),

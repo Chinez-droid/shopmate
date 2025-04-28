@@ -14,6 +14,7 @@ class ConfirmationScreen extends StatelessWidget {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
     final sessionProvider = Provider.of<SessionProvider>(context, listen: false);
     final totalAmount = cartProvider.totalAmount;
+    final participantCount = sessionProvider.getParticipantCount();
     
     return Scaffold(
       appBar: AppBar(
@@ -88,15 +89,39 @@ class ConfirmationScreen extends StatelessWidget {
                       ],
                     ),
                     const Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Session with:'),
-                        Text(sessionProvider.isCreator
-                            ? sessionProvider.currentSession?.friendName ?? 'Friend'
-                            : sessionProvider.currentSession?.creatorName ?? 'Creator'),
-                      ],
-                    ),
+                    if (sessionProvider.isCreator) ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Shopping session:'),
+                          Text('Created by you'),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Participants:'),
+                          Text('${participantCount - 1}'),
+                        ],
+                      ),
+                    ] else ...[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Shopping session:'),
+                          Text('Created by ${sessionProvider.currentSession?.creatorName ?? 'Creator'}'),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Other participants:'),
+                          Text('${participantCount - 1}'),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),

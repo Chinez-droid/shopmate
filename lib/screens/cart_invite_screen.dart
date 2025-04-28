@@ -17,6 +17,7 @@ class _CartInviteScreenState extends State<CartInviteScreen> {
   final _nameController = TextEditingController();
   bool _sessionCreated = false;
   String _inviteLink = '';
+  int _inviteSent = 0;
 
   @override
   void dispose() {
@@ -44,6 +45,18 @@ class _CartInviteScreenState extends State<CartInviteScreen> {
       _sessionCreated = true;
       _inviteLink = link;
     });
+  }
+
+  void _sendInvite() {
+    setState(() {
+      _inviteSent++;
+    });
+    
+    // Simulate an email address
+    final String mockEmail = 'friend$_inviteSent@gmail.com';
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Invite sent to $mockEmail')),
+    );
   }
 
   @override
@@ -130,6 +143,47 @@ class _CartInviteScreenState extends State<CartInviteScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
+
+                // Invitation Stats
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Invitations',
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Invitations sent:'),
+                            Text('$_inviteSent', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        // In a real app, you'd show how many have joined
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Friends joined:'),
+                            // This would be real data in a complete app
+                            Text(
+                              '${_inviteSent > 0 ? _inviteSent - 1 : 0}',
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -144,13 +198,7 @@ class _CartInviteScreenState extends State<CartInviteScreen> {
                       label: const Text('Copy Link'),
                     ),
                     ElevatedButton.icon(
-                      onPressed: () {
-                        // Simulate an email address
-                        final String mockEmail = 'friend@gmail.com';
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Email sent to $mockEmail')),
-                        );
-                      },
+                      onPressed: _sendInvite,
                       icon: const Icon(Icons.share),
                       label: const Text('Send Invite'),
                     ),
