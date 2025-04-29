@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "601512183063",
+    "project_id": "shopmate-c219d",
+    "storage_bucket": "shopmate-c219d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601512183063:android:675311730117cf16106352",
+        "android_client_info": {
+          "package_name": "com.chinez.shopmate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4M6gDlfI29BA0BFaq8mBcUi6jOy2u5t8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -17,9 +17,7 @@ class SharedCartScreen extends StatelessWidget {
     final cartProvider = Provider.of<CartProvider>(context);
     final sessionProvider = Provider.of<SessionProvider>(context);
     final cart = cartProvider.items;
-    final isCreator = sessionProvider.isCreator;
     // Removed sessionName and participants variables as they're no longer needed
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -98,7 +96,6 @@ class SharedCartScreen extends StatelessWidget {
                         itemCount: cart.length,
                         itemBuilder: (ctx, i) {
                           final item = cart.values.toList()[i];
-                          final cartItemKey = cart.keys.toList()[i];
 
                           return SlideInAnimation(
                             beginOffset: const Offset(0, 0.1),
@@ -224,20 +221,7 @@ class SharedCartScreen extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    // Delete button
-                                    if (item.addedBy ==
-                                            sessionProvider.currentUserName ||
-                                        isCreator)
-                                      IconButton(
-                                        icon: const Icon(Icons.delete_outline),
-                                        onPressed: () {
-                                          cartProvider.removeItem(cartItemKey);
-                                        },
-                                        color:
-                                            Theme.of(context).colorScheme.error,
-                                        padding: const EdgeInsets.all(4),
-                                        constraints: const BoxConstraints(),
-                                      ),
+                                    // Delete button removed
                                   ],
                                 ),
                               ),

@@ -24,16 +24,16 @@ class SessionProvider with ChangeNotifier {
     if (_currentUserName.isEmpty) {
       throw Exception('User name is required');
     }
-    
+
     final uuid = const Uuid();
     final sessionId = uuid.v4();
-    
+
     _currentSession = ShoppingSession(
       sessionId: sessionId,
       creatorName: _currentUserName,
       participants: [], // Initialize with empty list
     );
-    
+
     _isCreator = true;
     notifyListeners();
     return sessionId;
@@ -44,7 +44,7 @@ class SessionProvider with ChangeNotifier {
     // For this demo, we'll simulate a session with a randomly generated creator name
     // Get current session if it exists, or create a simulated one
     ShoppingSession? sessionToJoin;
-    
+
     if (_currentSession != null && _currentSession!.sessionId == sessionId) {
       // Session exists in this provider
       sessionToJoin = _currentSession;
@@ -57,10 +57,10 @@ class SessionProvider with ChangeNotifier {
         participants: [], // Start with empty list
       );
     }
-    
+
     // Add the participant to the session
     sessionToJoin?.participants.add(participantName);
-    
+
     _currentSession = sessionToJoin;
     _currentUserName = participantName;
     _isCreator = false;
@@ -73,7 +73,7 @@ class SessionProvider with ChangeNotifier {
     if (_currentSession == null) {
       return false;
     }
-    
+
     // Check if participant already exists
     if (!_currentSession!.participants.contains(participantName)) {
       _currentSession!.participants.add(participantName);
@@ -82,13 +82,13 @@ class SessionProvider with ChangeNotifier {
     }
     return false;
   }
-  
+
   // Get all participants including the creator
   List<String> getAllParticipants() {
     if (_currentSession == null) {
       return [];
     }
-    
+
     // Return creator and all participants
     return [_currentSession!.creatorName, ..._currentSession!.participants];
   }
@@ -98,7 +98,7 @@ class SessionProvider with ChangeNotifier {
     if (_currentSession == null) {
       return 0;
     }
-    
+
     // Creator + participants
     return 1 + _currentSession!.participants.length;
   }
@@ -119,42 +119,50 @@ class SessionProvider with ChangeNotifier {
     }
     return 'app://shop/session/${_currentSession!.sessionId}';
   }
-  
+
   // Add mock past sessions for the home screen using Faker
   List<ShoppingSession> getMockSessions() {
     final List<ShoppingSession> mockSessions = [];
-    
+
     // Generate 3-5 random mock sessions
-    final sessionCount = 3 + _faker.randomGenerator.integer(3); // 3 to 5 sessions
-    
+    final sessionCount =
+        3 + _faker.randomGenerator.integer(3); // 3 to 5 sessions
+
     for (int i = 0; i < sessionCount; i++) {
       final bool isActive = _faker.randomGenerator.boolean();
       final String sessionName = _generateSessionName();
-      
+
       // Generate 0-3 random participants
       final int participantCount = _faker.randomGenerator.integer(4); // 0 to 3
       List<String> participants = [];
-      
+
       for (int j = 0; j < participantCount; j++) {
         participants.add(_faker.person.firstName());
       }
-      
-      mockSessions.add(ShoppingSession(
-        sessionId: const Uuid().v4(),
-        creatorName: _currentUserName.isEmpty ? _faker.person.firstName() : _currentUserName,
-        participants: participants,
-        isActive: isActive,
-        createdAt: DateTime.now().subtract(Duration(
-          days: _faker.randomGenerator.integer(7),
-          hours: _faker.randomGenerator.integer(24),
-        )),
-        name: sessionName,
-      ));
+
+      mockSessions.add(
+        ShoppingSession(
+          sessionId: const Uuid().v4(),
+          creatorName:
+              _currentUserName.isEmpty
+                  ? _faker.person.firstName()
+                  : _currentUserName,
+          participants: participants,
+          isActive: isActive,
+          createdAt: DateTime.now().subtract(
+            Duration(
+              days: _faker.randomGenerator.integer(7),
+              hours: _faker.randomGenerator.integer(24),
+            ),
+          ),
+          name: sessionName,
+        ),
+      );
     }
-    
+
     return mockSessions;
   }
-  
+
   // Helper to generate realistic shopping session names
   String _generateSessionName() {
     final sessionTypes = [
@@ -167,9 +175,9 @@ class SessionProvider with ChangeNotifier {
       'Party Shopping',
       'Holiday Shopping',
       'Back to School',
-      'Tech Gadgets'
+      'Tech Gadgets',
     ];
-    
+
     return sessionTypes[_faker.randomGenerator.integer(sessionTypes.length)];
   }
 }

@@ -3,7 +3,7 @@ import '../models/cart_item.dart';
 
 class CartProvider with ChangeNotifier {
   Map<String, CartItem> _items = {};
-  
+
   Map<String, CartItem> get items {
     return {..._items};
   }
@@ -20,10 +20,15 @@ class CartProvider with ChangeNotifier {
     return total;
   }
 
-  void addItem(String productId, String productName, double price, String addedBy) {
+  void addItem(
+    String productId,
+    String productName,
+    double price,
+    String addedBy,
+  ) {
     // Create a unique key combining product ID and user who added it
     final String cartItemKey = '$productId-$addedBy';
-    
+
     if (_items.containsKey(cartItemKey)) {
       // Update existing item quantity for this specific user
       _items.update(
