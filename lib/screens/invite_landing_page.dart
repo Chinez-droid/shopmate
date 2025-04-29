@@ -6,6 +6,7 @@ import '../providers/session_provider.dart';
 import '../routes/app_router.dart';
 import '../utils/constants.dart';
 import '../widgets/custom_widgets.dart';
+import '../widgets/animations_widget.dart'; // Add this import
 
 @RoutePage()
 class InviteLandingPage extends StatefulWidget {
@@ -20,16 +21,19 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
   late String _sessionId;
   String _creatorName = 'Your friend';
   int _participantCount = 0;
-  
+
   @override
   void initState() {
     super.initState();
     // Generate random session ID with Faker
     final faker = Faker();
     _sessionId = faker.guid.guid();
-    
+
     // Use the actual session creator name if possible
-    final sessionProvider = Provider.of<SessionProvider>(context, listen: false);
+    final sessionProvider = Provider.of<SessionProvider>(
+      context,
+      listen: false,
+    );
     if (sessionProvider.currentSession != null) {
       _creatorName = sessionProvider.currentSession!.creatorName;
       _participantCount = sessionProvider.currentSession!.participants.length;
@@ -37,20 +41,22 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
       // For a real app, we would retrieve session details here
       // For now, generate a random creator name and participant count
       _creatorName = faker.person.firstName();
-      _participantCount = faker.randomGenerator.integer(3); // 0-2 other participants
+      _participantCount = faker.randomGenerator.integer(
+        3,
+      ); // 0-2 other participants
     }
   }
-  
+
   @override
   void dispose() {
     _friendNameController.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final sessionProvider = Provider.of<SessionProvider>(context);
-    
+
     return Scaffold(
       backgroundColor: kPrimaryColor,
       appBar: AppBar(
@@ -66,181 +72,275 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
         backgroundColor: kPurpleColor,
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Card(
-                elevation: 4,
-                margin: const EdgeInsets.only(bottom: 24),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(kCardBorderRadius),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundColor: kFadedPurple,
-                        child: Icon(
-                          Icons.shopping_cart,
-                          size: 42,
-                          color: kPurpleColor,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        'You\'ve been invited to shop together',
-                        style: kSubheadingTextStyle.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        '$_creatorName has invited you to join their shopping cart!',
-                        style: kBodyTextStyle,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      if (_participantCount > 0)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: kFadedPurple,
-                            borderRadius: BorderRadius.circular(kButtonBorderRadius),
+      body: Padding(
+        padding: const EdgeInsets.all(kDefaultPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SlideInAnimation(
+                      beginOffset: const Offset(0, 0.3),
+                      duration: const Duration(milliseconds: 600),
+                      child: Card(
+                        elevation: 4,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            kCardBorderRadius,
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
                             children: [
-                              Icon(
-                                Icons.people,
-                                size: 16,
-                                color: kPurpleColor,
+                              SlideInAnimation(
+                                beginOffset: const Offset(0, -0.2),
+                                duration: const Duration(milliseconds: 800),
+                                delay: true,
+                                child: PulseAnimation(
+                                  minScale: 1.0,
+                                  maxScale: 1.1,
+                                  duration: const Duration(milliseconds: 1500),
+                                  child: CircleAvatar(
+                                    radius: 32,
+                                    backgroundColor: kFadedPurple,
+                                    child: Icon(
+                                      Icons.shopping_cart,
+                                      size: 36,
+                                      color: kPurpleColor,
+                                    ),
+                                  ),
+                                ),
                               ),
-                              const SizedBox(width: 8),
-                              Text(
-                                '$_participantCount other ${_participantCount == 1 ? 'person' : 'people'} shopping',
-                                style: TextStyle(
-                                  color: kPurpleColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
+                              const SizedBox(height: 16),
+                              SlideInAnimation(
+                                beginOffset: const Offset(0, 0.2),
+                                duration: const Duration(milliseconds: 700),
+                                delay: true,
+                                child: Text(
+                                  'Your friend/family is inviting you to shop',
+                                  style: kSubheadingTextStyle.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              SlideInAnimation(
+                                beginOffset: const Offset(0, 0.2),
+                                duration: const Duration(milliseconds: 800),
+                                delay: true,
+                                child: Text(
+                                  '$_creatorName has invited you to join their shopping cart!',
+                                  style: kBodyTextStyle,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              if (_participantCount > 0)
+                                SlideInAnimation(
+                                  beginOffset: const Offset(0, 0.2),
+                                  duration: const Duration(milliseconds: 900),
+                                  delay: true,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: kFadedPurple,
+                                      borderRadius: BorderRadius.circular(
+                                        kButtonBorderRadius,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.people,
+                                          size: 14,
+                                          color: kPurpleColor,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          '$_participantCount other ${_participantCount == 1 ? 'person' : 'people'} shopping',
+                                          style: TextStyle(
+                                            color: kPurpleColor,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SlideInAnimation(
+                      beginOffset: const Offset(0, 0.3),
+                      duration: const Duration(milliseconds: 700),
+                      delay: true,
+                      child: Card(
+                        elevation: 4,
+                        margin: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            kCardBorderRadius,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SlideInAnimation(
+                                beginOffset: const Offset(0, 0.2),
+                                duration: const Duration(milliseconds: 600),
+                                delay: true,
+                                child: Text(
+                                  'Enter Your Name',
+                                  style: kTitleTextStyle,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              SlideInAnimation(
+                                beginOffset: const Offset(0, 0.2),
+                                duration: const Duration(milliseconds: 650),
+                                delay: true,
+                                child: Text(
+                                  'Your name will be visible to other shoppers',
+                                  style: kCaptionTextStyle,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              SlideInAnimation(
+                                beginOffset: const Offset(0, 0.2),
+                                duration: const Duration(milliseconds: 700),
+                                delay: true,
+                                child: TextField(
+                                  controller: _friendNameController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Your Name',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        kButtonBorderRadius,
+                                      ),
+                                    ),
+                                    prefixIcon: const Icon(
+                                      Icons.person,
+                                      color: kPurpleColor,
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        kButtonBorderRadius,
+                                      ),
+                                      borderSide: const BorderSide(
+                                        color: kPurpleColor,
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
+                                  style: kBodyTextStyle,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                    ],
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            ),
 
-              Card(
-                elevation: 4,
-                margin: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(kCardBorderRadius),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Enter Your Name',
-                        style: kTitleTextStyle,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Your name will be visible to other shoppers',
-                        style: kCaptionTextStyle,
-                      ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: _friendNameController,
-                        decoration: InputDecoration(
-                          labelText: 'Your Name',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(kButtonBorderRadius),
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.person,
-                            color: kPurpleColor,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(kButtonBorderRadius),
-                            borderSide: const BorderSide(color: kPurpleColor, width: 2),
-                          ),
-                        ),
-                        style: kBodyTextStyle,
-                      ),
-                    ],
-                  ),
+            const SizedBox(height: 16),
+
+            SlideInAnimation(
+              beginOffset: const Offset(0, 0.3),
+              duration: const Duration(milliseconds: 800),
+              delay: true,
+              child: PulseAnimation(
+                minScale: 1.0,
+                maxScale: 1.05,
+                duration: const Duration(milliseconds: 1800),
+                child: PrimaryButton(
+                  text: 'START SHOPPING',
+                  onPressed: () {
+                    if (_friendNameController.text.isNotEmpty) {
+                      sessionProvider.setCurrentUserName(
+                        _friendNameController.text,
+                      );
+                      sessionProvider.joinSession(
+                        _sessionId,
+                        _friendNameController.text,
+                      );
+                      context.router.push(const ProductListRoute());
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please enter your name')),
+                      );
+                    }
+                  },
+                  icon: Icons.shopping_bag_outlined,
+                  isFullWidth: true,
                 ),
               ),
-              
-              const SizedBox(height: 30),
-              
-              PrimaryButton(
-                text: 'START SHOPPING',
-                onPressed: () {
-                  if (_friendNameController.text.isNotEmpty) {
-                    sessionProvider.setCurrentUserName(_friendNameController.text);
-                    sessionProvider.joinSession(_sessionId, _friendNameController.text);
-                    context.router.push(const ProductListRoute());
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please enter your name')),
-                    );
-                  }
-                },
-                icon: Icons.shopping_bag_outlined,
-                isFullWidth: true,
-              ),
-              
-              const SizedBox(height: 16),
-              
-              SecondaryButton(
+            ),
+
+            const SizedBox(height: 12),
+
+            SlideInAnimation(
+              beginOffset: const Offset(0, 0.2),
+              duration: const Duration(milliseconds: 850),
+              delay: true,
+              child: SecondaryButton(
                 text: 'CANCEL',
                 onPressed: () {
                   context.router.pop();
                 },
                 isFullWidth: true,
               ),
+            ),
 
-              const SizedBox(height: 24),
+            const SizedBox(height: 16),
 
-              Center(
+            SlideInAnimation(
+              beginOffset: const Offset(0, 0.1),
+              duration: const Duration(milliseconds: 900),
+              delay: true,
+              child: Center(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         color: kSuccessColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      child: Icon(
-                        Icons.lock,
-                        size: 12,
-                        color: kSuccessColor,
-                      ),
+                      child: Icon(Icons.lock, size: 10, color: kSuccessColor),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                     Text(
                       'Secure shopping session',
                       style: kCaptionTextStyle.copyWith(
                         color: kGreyColor1,
+                        fontSize: 12,
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -21,10 +21,13 @@ class CartProvider with ChangeNotifier {
   }
 
   void addItem(String productId, String productName, double price, String addedBy) {
-    if (_items.containsKey(productId)) {
-      // Update existing item quantity
+    // Create a unique key combining product ID and user who added it
+    final String cartItemKey = '$productId-$addedBy';
+    
+    if (_items.containsKey(cartItemKey)) {
+      // Update existing item quantity for this specific user
       _items.update(
-        productId,
+        cartItemKey,
         (existingCartItem) => CartItem(
           productId: existingCartItem.productId,
           productName: existingCartItem.productName,
@@ -34,9 +37,9 @@ class CartProvider with ChangeNotifier {
         ),
       );
     } else {
-      // Add new item
+      // Add new item for this specific user
       _items.putIfAbsent(
-        productId,
+        cartItemKey,
         () => CartItem(
           productId: productId,
           productName: productName,
@@ -49,8 +52,8 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeItem(String productId) {
-    _items.remove(productId);
+  void removeItem(String cartItemKey) {
+    _items.remove(cartItemKey);
     notifyListeners();
   }
 
