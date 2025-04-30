@@ -2,25 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:faker/faker.dart';
 import '../models/session.dart';
+import '../services/firestore_service.dart';
 
 class SessionProvider with ChangeNotifier {
   ShoppingSession? _currentSession;
-  final List<ShoppingSession> _pastSessions = [];
+  List<ShoppingSession> _pastSessions = [];
   String _currentUserName = '';
   bool _isCreator = true;
   final Faker _faker = Faker();
+  final FirestoreService _firestoreService = FirestoreService();
 
+  // Getters
   ShoppingSession? get currentSession => _currentSession;
   List<ShoppingSession> get pastSessions => [..._pastSessions];
   String get currentUserName => _currentUserName;
   bool get isCreator => _isCreator;
 
+  // Set current user name
   void setCurrentUserName(String name) {
     _currentUserName = name;
     notifyListeners();
   }
 
-  String createNewSession() {
+  // Create a new shopping session in Firestore
+  Future<String> createNewSession({String? name}) async {
     if (_currentUserName.isEmpty) {
       throw Exception('User name is required');
     }
@@ -28,59 +33,94 @@ class SessionProvider with ChangeNotifier {
     final uuid = const Uuid();
     final sessionId = uuid.v4();
 
-    _currentSession = ShoppingSession(
+    final newSession = ShoppingSession(
       sessionId: sessionId,
       creatorName: _currentUserName,
-      participants: [], // Initialize with empty list
+      participants: [],
+      name: name ?? 'Shopping Session',
+      isActive: true,
+      createdAt: DateTime.now(),
     );
 
-    _isCreator = true;
-    notifyListeners();
-    return sessionId;
-  }
-
-  bool joinSession(String sessionId, String participantName) {
-    // In a real app, you would verify the session exists in a database
-    // For this demo, we'll simulate a session with a randomly generated creator name
-    // Get current session if it exists, or create a simulated one
-    ShoppingSession? sessionToJoin;
-
-    if (_currentSession != null && _currentSession!.sessionId == sessionId) {
-      // Session exists in this provider
-      sessionToJoin = _currentSession;
-    } else {
-      // Simulate an existing session
-      final creatorName = _faker.person.firstName();
-      sessionToJoin = ShoppingSession(
-        sessionId: sessionId,
-        creatorName: creatorName,
-        participants: [], // Start with empty list
+    try {
+      // Create session in Firestore
+      final createdSessionId = await _firestoreService.createSession(
+        newSession,
       );
+
+      // Update local state
+      _currentSession = newSession.copyWith(sessionId: createdSessionId);
+      _isCreator = true;
+      notifyListeners();
+
+      return createdSessionId;
+    } catch (e) {
+      debugPrint('Error creating session: $e');
+      throw Exception('Failed to create shopping session');
     }
-
-    // Add the participant to the session
-    sessionToJoin?.participants.add(participantName);
-
-    _currentSession = sessionToJoin;
-    _currentUserName = participantName;
-    _isCreator = false;
-    notifyListeners();
-    return true;
   }
 
-  // Method to add a participant to current session
-  bool addParticipant(String participantName) {
+  // Join an existing session
+  Future<bool> joinSession(String sessionId, String participantName) async {
+    try {
+      // Get session from Firestore
+      final session = await _firestoreService.getSession(sessionId);
+
+      if (session == null) {
+        // Session doesn't exist
+        return false;
+      }
+
+      // Add the participant to the session in Firestore
+      final success = await _firestoreService.addParticipantToSession(
+        sessionId,
+        participantName,
+      );
+
+      if (success) {
+        // Update local session state
+        session.participants.add(participantName);
+        _currentSession = session;
+        _currentUserName = participantName;
+        _isCreator = false;
+        notifyListeners();
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      debugPrint('Error joining session: $e');
+      return false;
+    }
+  }
+
+  // Add a participant to current session
+  Future<bool> addParticipant(String participantName) async {
     if (_currentSession == null) {
       return false;
     }
 
-    // Check if participant already exists
-    if (!_currentSession!.participants.contains(participantName)) {
-      _currentSession!.participants.add(participantName);
-      notifyListeners();
-      return true;
+    try {
+      // Check if participant already exists
+      if (!_currentSession!.participants.contains(participantName)) {
+        // Add to Firestore
+        final success = await _firestoreService.addParticipantToSession(
+          _currentSession!.sessionId,
+          participantName,
+        );
+
+        if (success) {
+          // Update local state
+          _currentSession!.participants.add(participantName);
+          notifyListeners();
+          return true;
+        }
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Error adding participant: $e');
+      return false;
     }
-    return false;
   }
 
   // Get all participants including the creator
@@ -103,13 +143,42 @@ class SessionProvider with ChangeNotifier {
     return 1 + _currentSession!.participants.length;
   }
 
-  void leaveSession() {
+  // Leave or end current session
+  Future<void> leaveSession() async {
     if (_currentSession != null) {
-      _currentSession!.isActive = false;
-      _pastSessions.add(_currentSession!);
-      _currentSession = null;
+      try {
+        // Update session status in Firestore if you're the creator
+        if (_isCreator) {
+          await _firestoreService.updateSessionStatus(
+            _currentSession!.sessionId,
+            false,
+          );
+        }
+
+        // Add to past sessions
+        _currentSession!.isActive = false;
+        _pastSessions.add(_currentSession!);
+        _currentSession = null;
+        notifyListeners();
+      } catch (e) {
+        debugPrint('Error leaving session: $e');
+        throw Exception('Failed to leave session');
+      }
     }
-    notifyListeners();
+  }
+
+  // Get past sessions for current user
+  Future<void> loadUserSessions() async {
+    if (_currentUserName.isEmpty) {
+      return;
+    }
+
+    try {
+      _pastSessions = await _firestoreService.getUserSessions(_currentUserName);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading user sessions: $e');
+    }
   }
 
   // Simulate session sharing - returns share URL

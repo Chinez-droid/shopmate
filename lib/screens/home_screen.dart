@@ -16,7 +16,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _headerAnimationController;
   late Animation<double> _headerAnimation;
 
@@ -86,7 +87,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [kPurpleColor, kPurpleColor.withValues(alpha: 0.0)],
+                      colors: [
+                        kPurpleColor,
+                        kPurpleColor.withValues(alpha: 0.0),
+                      ],
                       stops: const [0.0, 1.0],
                     ),
                   ),

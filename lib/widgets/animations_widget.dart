@@ -31,26 +31,17 @@ class _SlideInAnimationState extends State<SlideInAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
+    _controller = AnimationController(vsync: this, duration: widget.duration);
 
     _slideAnimation = Tween<Offset>(
       begin: widget.beginOffset,
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     _opacityAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: widget.curve,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: widget.curve));
 
     if (widget.delay) {
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -73,10 +64,7 @@ class _SlideInAnimationState extends State<SlideInAnimation>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _opacityAnimation,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: widget.child,
-      ),
+      child: SlideTransition(position: _slideAnimation, child: widget.child),
     );
   }
 }
@@ -113,10 +101,7 @@ class _PulseAnimationState extends State<PulseAnimation>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
+    _controller = AnimationController(vsync: this, duration: widget.duration);
 
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(

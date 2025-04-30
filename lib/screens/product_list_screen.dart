@@ -21,59 +21,105 @@ class _ProductListScreenState extends State<ProductListScreen> {
   final List<Product> _products = [];
   final _faker = Faker();
   String _selectedCategory = 'All';
-  final List<String> _categories = ['All', 'Electronics', 'Accessories', 'Home', 'Office'];
-  
+  final List<String> _categories = [
+    'All',
+    'Electronics',
+    'Accessories',
+    'Home',
+    'Office',
+  ];
+
   @override
   void initState() {
     super.initState();
     _generateProducts();
   }
-  
+
   void _generateProducts() {
     // Generate 20 random products using Faker
     for (int i = 0; i < 20; i++) {
       final id = 'p${i + 1}';
       final name = _generateProductName();
-      final price = double.parse((_faker.randomGenerator.decimal(scale: 100, min: 5)).toStringAsFixed(2));
-      
-      _products.add(Product(
-        id: id,
-        name: name,
-        price: price,
-      ));
+      final price = double.parse(
+        (_faker.randomGenerator.decimal(scale: 100, min: 5)).toStringAsFixed(2),
+      );
+
+      _products.add(Product(id: id, name: name, price: price));
     }
   }
-  
+
   String _generateProductName() {
     final productTypes = [
-      'Smartphone', 'Headphones', 'Laptop', 'Tablet', 'Smart Watch', 
-      'Camera', 'Speaker', 'Monitor', 'Keyboard', 'Mouse',
-      'Charger', 'Power Bank', 'USB Cable', 'Case', 'Screen Protector',
-      'Earbuds', 'Desk', 'Lamp', 'Chair', 'Backpack'
+      'Smartphone',
+      'Headphones',
+      'Laptop',
+      'Tablet',
+      'Smart Watch',
+      'Camera',
+      'Speaker',
+      'Monitor',
+      'Keyboard',
+      'Mouse',
+      'Charger',
+      'Power Bank',
+      'USB Cable',
+      'Case',
+      'Screen Protector',
+      'Earbuds',
+      'Desk',
+      'Lamp',
+      'Chair',
+      'Backpack',
     ];
-    
+
     final adjectives = [
-      'Premium', 'Wireless', 'Ergonomic', 'Ultra', 'Pro', 'Elite',
-      'Advanced', 'Deluxe', 'Smart', 'Portable', 'Compact',
-      'High-End', 'Budget', 'Luxury', 'Essential'
+      'Premium',
+      'Wireless',
+      'Ergonomic',
+      'Ultra',
+      'Pro',
+      'Elite',
+      'Advanced',
+      'Deluxe',
+      'Smart',
+      'Portable',
+      'Compact',
+      'High-End',
+      'Budget',
+      'Luxury',
+      'Essential',
     ];
-    
+
     final brands = [
-      'TechPro', 'Nexus', 'ZenTech', 'Fusion', 'Prime', 'Alpha',
-      'Omega', 'Vertex', 'Pinnacle', 'Echo', 'Pulse', 'Element'
+      'TechPro',
+      'Nexus',
+      'ZenTech',
+      'Fusion',
+      'Prime',
+      'Alpha',
+      'Omega',
+      'Vertex',
+      'Pinnacle',
+      'Echo',
+      'Pulse',
+      'Element',
     ];
-    
+
     // Randomly decide whether to use a brand name
     final useBrand = _faker.randomGenerator.boolean();
-    
+
     if (useBrand) {
       final brand = brands[_faker.randomGenerator.integer(brands.length)];
-      final adjective = adjectives[_faker.randomGenerator.integer(adjectives.length)];
-      final type = productTypes[_faker.randomGenerator.integer(productTypes.length)];
+      final adjective =
+          adjectives[_faker.randomGenerator.integer(adjectives.length)];
+      final type =
+          productTypes[_faker.randomGenerator.integer(productTypes.length)];
       return '$brand $adjective $type';
     } else {
-      final adjective = adjectives[_faker.randomGenerator.integer(adjectives.length)];
-      final type = productTypes[_faker.randomGenerator.integer(productTypes.length)];
+      final adjective =
+          adjectives[_faker.randomGenerator.integer(adjectives.length)];
+      final type =
+          productTypes[_faker.randomGenerator.integer(productTypes.length)];
       return '$adjective $type';
     }
   }
@@ -84,7 +130,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
     final sessionProvider = Provider.of<SessionProvider>(context);
     final userName = sessionProvider.currentUserName;
     final isCreator = sessionProvider.isCreator;
-    
+
     return Scaffold(
       backgroundColor: kPrimaryColor,
       appBar: AppBar(
@@ -135,10 +181,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     ),
                     child: Text(
                       '${cartProvider.itemCount}',
-                      style: const TextStyle(
-                        color: kWhiteColor,
-                        fontSize: 10,
-                      ),
+                      style: const TextStyle(color: kWhiteColor, fontSize: 10),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -191,14 +234,17 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 ),
               ),
             ),
-            
+
             // Category filter with staggered animation
             SlideInAnimation(
               beginOffset: const Offset(-0.2, 0),
               duration: const Duration(milliseconds: 700),
               delay: true,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: kDefaultPadding,
+                  vertical: 8,
+                ),
                 child: SizedBox(
                   height: 40,
                   child: ListView.builder(
@@ -207,7 +253,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     itemBuilder: (ctx, index) {
                       final category = _categories[index];
                       final isSelected = category == _selectedCategory;
-                      
+
                       // Apply staggered animations to category items
                       return SlideInAnimation(
                         beginOffset: Offset(0.2, 0),
@@ -224,14 +270,19 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             decoration: BoxDecoration(
                               color: isSelected ? kPurpleColor : kFadedPurple,
-                              borderRadius: BorderRadius.circular(kButtonBorderRadius),
+                              borderRadius: BorderRadius.circular(
+                                kButtonBorderRadius,
+                              ),
                             ),
                             alignment: Alignment.center,
                             child: Text(
                               category,
                               style: kBodyTextStyle.copyWith(
                                 color: isSelected ? kWhiteColor : kPurpleColor,
-                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                                fontWeight:
+                                    isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
                               ),
                             ),
                           ),
@@ -242,7 +293,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 ),
               ),
             ),
-            
+
             // Products grid with staggered animations
             Expanded(
               child: Padding(
@@ -258,18 +309,19 @@ class _ProductListScreenState extends State<ProductListScreen> {
                     mainAxisSpacing: 12,
                   ),
                   itemCount: _products.length,
-                  itemBuilder: (ctx, i) => SlideInAnimation(
-                    // Apply staggered animation to grid items
-                    beginOffset: Offset(0, 0.25),
-                    duration: Duration(milliseconds: 450 + (i % 4) * 150),
-                    delay: true,
-                    curve: Curves.easeOutQuart,
-                    child: _buildProductCard(
-                      _products[i],
-                      cartProvider,
-                      userName,
-                    ),
-                  ),
+                  itemBuilder:
+                      (ctx, i) => SlideInAnimation(
+                        // Apply staggered animation to grid items
+                        beginOffset: Offset(0, 0.25),
+                        duration: Duration(milliseconds: 450 + (i % 4) * 150),
+                        delay: true,
+                        curve: Curves.easeOutQuart,
+                        child: _buildProductCard(
+                          _products[i],
+                          cartProvider,
+                          userName,
+                        ),
+                      ),
                 ),
               ),
             ),
@@ -278,27 +330,22 @@ class _ProductListScreenState extends State<ProductListScreen> {
       ),
     );
   }
-  
-  Widget _buildProductCard(Product product, CartProvider cartProvider, String userName) {
+
+  Widget _buildProductCard(
+    Product product,
+    CartProvider cartProvider,
+    String userName,
+  ) {
     return InkWell(
       onTap: () {
-        cartProvider.addItem(
-          product.id,
-          product.name,
-          product.price,
-          userName,
-        );
+        cartProvider.addItem(product.id, product.name, product.price, userName);
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Added ${product.name} to cart'),
             duration: const Duration(seconds: 3),
             behavior: SnackBarBehavior.floating,
-            margin: EdgeInsets.only(
-              bottom: 10,
-              left: 10,
-              right: 10,
-            ),
+            margin: EdgeInsets.only(bottom: 10, left: 10, right: 10),
           ),
         );
       },
@@ -331,7 +378,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 ),
               ),
             ),
-            
+
             // Product info
             Expanded(
               flex: 2,

@@ -9,15 +9,43 @@ import '../widgets/custom_widgets.dart';
 import '../widgets/animations_widget.dart';
 
 @RoutePage()
-class SharedCartScreen extends StatelessWidget {
+class SharedCartScreen extends StatefulWidget {
   const SharedCartScreen({super.key});
+
+  @override
+  State<SharedCartScreen> createState() => _SharedCartScreenState();
+}
+
+class _SharedCartScreenState extends State<SharedCartScreen> {
+  bool _isInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_isInitialized) {
+      final sessionProvider = Provider.of<SessionProvider>(
+        context,
+        listen: false,
+      );
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
+      // Set active session ID for cart provider to establish Firestore stream
+      if (sessionProvider.currentSession != null) {
+        cartProvider.setActiveSession(
+          sessionProvider.currentSession!.sessionId,
+        );
+        _isInitialized = true;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
     final sessionProvider = Provider.of<SessionProvider>(context);
     final cart = cartProvider.items;
-    // Removed sessionName and participants variables as they're no longer needed
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -47,9 +75,6 @@ class SharedCartScreen extends StatelessWidget {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Removed session info bar
-            // Removed participants row
-
             // Cart title with slide-in animation
             SlideInAnimation(
               beginOffset: const Offset(0, 0.1),
@@ -96,6 +121,8 @@ class SharedCartScreen extends StatelessWidget {
                         itemCount: cart.length,
                         itemBuilder: (ctx, i) {
                           final item = cart.values.toList()[i];
+                          final bool isCurrentUserItem =
+                              item.addedBy == sessionProvider.currentUserName;
 
                           return SlideInAnimation(
                             beginOffset: const Offset(0, 0.1),
@@ -167,9 +194,7 @@ class SharedCartScreen extends StatelessWidget {
                                                     ),
                                                 decoration: BoxDecoration(
                                                   color:
-                                                      item.addedBy ==
-                                                              sessionProvider
-                                                                  .currentUserName
+                                                      isCurrentUserItem
                                                           ? kFadedPurple
                                                           : Colors.grey[200],
                                                   borderRadius:
@@ -183,9 +208,7 @@ class SharedCartScreen extends StatelessWidget {
                                                       Icons.person,
                                                       size: 12,
                                                       color:
-                                                          item.addedBy ==
-                                                                  sessionProvider
-                                                                      .currentUserName
+                                                          isCurrentUserItem
                                                               ? kPurpleColor
                                                               : Colors
                                                                   .grey[700],
@@ -196,9 +219,7 @@ class SharedCartScreen extends StatelessWidget {
                                                       style: TextStyle(
                                                         fontSize: 11,
                                                         color:
-                                                            item.addedBy ==
-                                                                    sessionProvider
-                                                                        .currentUserName
+                                                            isCurrentUserItem
                                                                 ? kPurpleColor
                                                                 : Colors
                                                                     .grey[700],
@@ -221,7 +242,6 @@ class SharedCartScreen extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    // Delete button removed
                                   ],
                                 ),
                               ),

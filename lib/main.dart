@@ -9,27 +9,21 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
-  
+
   final _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (ctx) => CartProvider(),
-        ),
-        ChangeNotifierProvider(
-          create: (ctx) => SessionProvider(),
-        ),
+        ChangeNotifierProvider(create: (ctx) => CartProvider()),
+        ChangeNotifierProvider(create: (ctx) => SessionProvider()),
       ],
       child: MaterialApp.router(
         title: 'Shopmate',
