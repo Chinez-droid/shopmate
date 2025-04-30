@@ -3,7 +3,7 @@ class CartItem {
   final String productName;
   final double price;
   final int quantity;
-  final String addedBy; // Track who added this item
+  final String addedBy;
 
   CartItem({
     required this.productId,
@@ -13,5 +13,6 @@ class CartItem {
     required this.addedBy,
   });
 
+  /// Calculates the total price by multiplying the item's price by its quantity
   double get totalPrice => price * quantity;
 }

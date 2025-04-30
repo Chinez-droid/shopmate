@@ -9,10 +9,8 @@ class CartProvider with ChangeNotifier {
   String _sessionId = '';
   StreamSubscription<Map<String, CartItem>>? _cartSubscription;
 
-  // Constructor
   CartProvider();
 
-  // Getters
   Map<String, CartItem> get items {
     return {..._items};
   }

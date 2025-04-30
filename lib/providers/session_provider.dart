@@ -12,7 +12,6 @@ class SessionProvider with ChangeNotifier {
   final Faker _faker = Faker();
   final FirestoreService _firestoreService = FirestoreService();
 
-  // Getters
   ShoppingSession? get currentSession => _currentSession;
   List<ShoppingSession> get pastSessions => [..._pastSessions];
   String get currentUserName => _currentUserName;
@@ -43,12 +42,10 @@ class SessionProvider with ChangeNotifier {
     );
 
     try {
-      // Create session in Firestore
       final createdSessionId = await _firestoreService.createSession(
         newSession,
       );
 
-      // Update local state
       _currentSession = newSession.copyWith(sessionId: createdSessionId);
       _isCreator = true;
       notifyListeners();
@@ -67,7 +64,6 @@ class SessionProvider with ChangeNotifier {
       final session = await _firestoreService.getSession(sessionId);
 
       if (session == null) {
-        // Session doesn't exist
         return false;
       }
 
@@ -103,14 +99,12 @@ class SessionProvider with ChangeNotifier {
     try {
       // Check if participant already exists
       if (!_currentSession!.participants.contains(participantName)) {
-        // Add to Firestore
         final success = await _firestoreService.addParticipantToSession(
           _currentSession!.sessionId,
           participantName,
         );
 
         if (success) {
-          // Update local state
           _currentSession!.participants.add(participantName);
           notifyListeners();
           return true;
@@ -128,12 +122,9 @@ class SessionProvider with ChangeNotifier {
     if (_currentSession == null) {
       return [];
     }
-
-    // Return creator and all participants
     return [_currentSession!.creatorName, ..._currentSession!.participants];
   }
 
-  // Get participant count (including creator)
   int getParticipantCount() {
     if (_currentSession == null) {
       return 0;
@@ -194,8 +185,7 @@ class SessionProvider with ChangeNotifier {
     final List<ShoppingSession> mockSessions = [];
 
     // Generate 3-5 random mock sessions
-    final sessionCount =
-        3 + _faker.randomGenerator.integer(3); // 3 to 5 sessions
+    final sessionCount = 3 + _faker.randomGenerator.integer(3);
 
     for (int i = 0; i < sessionCount; i++) {
       final bool isActive = _faker.randomGenerator.boolean();

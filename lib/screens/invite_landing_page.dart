@@ -6,7 +6,8 @@ import '../providers/session_provider.dart';
 import '../routes/app_router.dart';
 import '../utils/constants.dart';
 import '../widgets/custom_widgets.dart';
-import '../widgets/animations_widget.dart'; // Add this import
+import '../widgets/animations_widget.dart';
+import '../widgets/responsive_widget.dart';
 
 @RoutePage()
 class InviteLandingPage extends StatefulWidget {
@@ -38,12 +39,12 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
       _creatorName = sessionProvider.currentSession!.creatorName;
       _participantCount = sessionProvider.currentSession!.participants.length;
     } else {
-      // For a real app, we would retrieve session details here
-      // For now, generate a random creator name and participant count
+      
+      // Generate a random creator name and participant count
       _creatorName = faker.person.firstName();
       _participantCount = faker.randomGenerator.integer(
         3,
-      ); // 0-2 other participants
+      ); 
     }
   }
 
@@ -57,292 +58,343 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
   Widget build(BuildContext context) {
     final sessionProvider = Provider.of<SessionProvider>(context);
 
-    return Scaffold(
-      backgroundColor: kPrimaryColor,
-      appBar: AppBar(
-        title: const Text(
-          'Join Session',
-          style: TextStyle(
-            fontFamily: 'Raleway',
-            fontSize: 22,
-            fontWeight: FontWeight.w600,
-            color: kWhiteColor,
+    return ResponsiveBuilder(
+      builder: (context, sizingInfo) {
+        final isSmallScreen = sizingInfo.screenSize.width < 360;
+        final defaultPadding = isSmallScreen ? 16.0 : kDefaultPadding;
+        final titleFontSize = isSmallScreen ? 18.0 : 22.0;
+        final cardPadding = isSmallScreen ? 12.0 : 16.0;
+        final spacingHeight = isSmallScreen ? 12.0 : 16.0;
+        final smallSpacingHeight = isSmallScreen ? 8.0 : 12.0;
+        final tinySpacingHeight = isSmallScreen ? 4.0 : 6.0;
+        final avatarRadius = isSmallScreen ? 28.0 : 32.0;
+        final iconSize = isSmallScreen ? 30.0 : 36.0;
+        final smallIconSize = isSmallScreen ? 12.0 : 14.0;
+        final tinyIconSize = isSmallScreen ? 8.0 : 10.0;
+        final borderRadius = isSmallScreen ? 10.0 : 12.0;
+        
+        final headingStyle = kSubheadingTextStyle.copyWith(
+          fontWeight: FontWeight.w600,
+          fontSize: isSmallScreen ? 16.0 : kSubheadingTextStyle.fontSize,
+        );
+        
+        final bodyStyle = kBodyTextStyle.copyWith(
+          fontSize: isSmallScreen ? 14.0 : kBodyTextStyle.fontSize,
+        );
+        
+        final titleStyle = kTitleTextStyle.copyWith(
+          fontSize: isSmallScreen ? 16.0 : kTitleTextStyle.fontSize,
+        );
+        
+        final captionStyle = kCaptionTextStyle.copyWith(
+          fontSize: isSmallScreen ? 10.0 : kCaptionTextStyle.fontSize,
+        );
+        
+        final smallCaptionStyle = kCaptionTextStyle.copyWith(
+          color: kGreyColor1,
+          fontSize: isSmallScreen ? 10.0 : 12.0,
+        );
+
+        return Scaffold(
+          backgroundColor: kPrimaryColor,
+          appBar: AppBar(
+            title: Text(
+              'Join Session',
+              style: TextStyle(
+                fontFamily: 'Raleway',
+                fontSize: titleFontSize,
+                fontWeight: FontWeight.w600,
+                color: kWhiteColor,
+              ),
+            ),
+            backgroundColor: kPurpleColor,
+            elevation: 0,
           ),
-        ),
-        backgroundColor: kPurpleColor,
-        elevation: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(kDefaultPadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SlideInAnimation(
-                      beginOffset: const Offset(0, 0.3),
-                      duration: const Duration(milliseconds: 600),
-                      child: Card(
-                        elevation: 4,
-                        margin: const EdgeInsets.only(bottom: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            kCardBorderRadius,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            children: [
-                              SlideInAnimation(
-                                beginOffset: const Offset(0, -0.2),
-                                duration: const Duration(milliseconds: 800),
-                                delay: true,
-                                child: PulseAnimation(
-                                  minScale: 1.0,
-                                  maxScale: 1.1,
-                                  duration: const Duration(milliseconds: 1500),
-                                  child: CircleAvatar(
-                                    radius: 32,
-                                    backgroundColor: kFadedPurple,
-                                    child: Icon(
-                                      Icons.shopping_cart,
-                                      size: 36,
-                                      color: kPurpleColor,
-                                    ),
-                                  ),
-                                ),
+          body: Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SlideInAnimation(
+                          beginOffset: const Offset(0, 0.3),
+                          duration: const Duration(milliseconds: 600),
+                          child: Card(
+                            elevation: 4,
+                            margin: EdgeInsets.only(bottom: spacingHeight),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                kCardBorderRadius,
                               ),
-                              const SizedBox(height: 16),
-                              SlideInAnimation(
-                                beginOffset: const Offset(0, 0.2),
-                                duration: const Duration(milliseconds: 700),
-                                delay: true,
-                                child: Text(
-                                  'Your friend/family is inviting you to shop',
-                                  style: kSubheadingTextStyle.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              SlideInAnimation(
-                                beginOffset: const Offset(0, 0.2),
-                                duration: const Duration(milliseconds: 800),
-                                delay: true,
-                                child: Text(
-                                  '$_creatorName has invited you to join their shopping cart!',
-                                  style: kBodyTextStyle,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              if (_participantCount > 0)
-                                SlideInAnimation(
-                                  beginOffset: const Offset(0, 0.2),
-                                  duration: const Duration(milliseconds: 900),
-                                  delay: true,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: kFadedPurple,
-                                      borderRadius: BorderRadius.circular(
-                                        kButtonBorderRadius,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.people,
-                                          size: 14,
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(cardPadding),
+                              child: Column(
+                                children: [
+                                  SlideInAnimation(
+                                    beginOffset: const Offset(0, -0.2),
+                                    duration: const Duration(milliseconds: 800),
+                                    delay: true,
+                                    child: PulseAnimation(
+                                      minScale: 1.0,
+                                      maxScale: 1.1,
+                                      duration: const Duration(milliseconds: 1500),
+                                      child: CircleAvatar(
+                                        radius: avatarRadius,
+                                        backgroundColor: kFadedPurple,
+                                        child: Icon(
+                                          Icons.shopping_cart,
+                                          size: iconSize,
                                           color: kPurpleColor,
                                         ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          '$_participantCount other ${_participantCount == 1 ? 'person' : 'people'} shopping',
-                                          style: TextStyle(
-                                            color: kPurpleColor,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: spacingHeight),
+                                  SlideInAnimation(
+                                    beginOffset: const Offset(0, 0.2),
+                                    duration: const Duration(milliseconds: 700),
+                                    delay: true,
+                                    child: Text(
+                                      'Your friend/family is inviting you to shop',
+                                      style: headingStyle,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  SizedBox(height: smallSpacingHeight),
+                                  SlideInAnimation(
+                                    beginOffset: const Offset(0, 0.2),
+                                    duration: const Duration(milliseconds: 800),
+                                    delay: true,
+                                    child: Text(
+                                      '$_creatorName has invited you to join their shopping cart!',
+                                      style: bodyStyle,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  SizedBox(height: smallSpacingHeight),
+                                  if (_participantCount > 0)
+                                    SlideInAnimation(
+                                      beginOffset: const Offset(0, 0.2),
+                                      duration: const Duration(milliseconds: 900),
+                                      delay: true,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: isSmallScreen ? 10.0 : 12.0,
+                                          vertical: isSmallScreen ? 4.0 : 6.0,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: kFadedPurple,
+                                          borderRadius: BorderRadius.circular(
+                                            borderRadius,
                                           ),
                                         ),
-                                      ],
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.people,
+                                              size: smallIconSize,
+                                              color: kPurpleColor,
+                                            ),
+                                            SizedBox(width: isSmallScreen ? 4.0 : 6.0),
+                                            Text(
+                                              '$_participantCount other ${_participantCount == 1 ? 'person' : 'people'} shopping',
+                                              style: TextStyle(
+                                                color: kPurpleColor,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: isSmallScreen ? 10.0 : 12.0,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SlideInAnimation(
+                          beginOffset: const Offset(0, 0.3),
+                          duration: const Duration(milliseconds: 700),
+                          delay: true,
+                          child: Card(
+                            elevation: 4,
+                            margin: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                kCardBorderRadius,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(cardPadding),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SlideInAnimation(
+                                    beginOffset: const Offset(0, 0.2),
+                                    duration: const Duration(milliseconds: 600),
+                                    delay: true,
+                                    child: Text(
+                                      'Enter Your Name',
+                                      style: titleStyle,
                                     ),
                                   ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    SlideInAnimation(
-                      beginOffset: const Offset(0, 0.3),
-                      duration: const Duration(milliseconds: 700),
-                      delay: true,
-                      child: Card(
-                        elevation: 4,
-                        margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            kCardBorderRadius,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SlideInAnimation(
-                                beginOffset: const Offset(0, 0.2),
-                                duration: const Duration(milliseconds: 600),
-                                delay: true,
-                                child: Text(
-                                  'Enter Your Name',
-                                  style: kTitleTextStyle,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              SlideInAnimation(
-                                beginOffset: const Offset(0, 0.2),
-                                duration: const Duration(milliseconds: 650),
-                                delay: true,
-                                child: Text(
-                                  'Your name will be visible to other shoppers',
-                                  style: kCaptionTextStyle,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              SlideInAnimation(
-                                beginOffset: const Offset(0, 0.2),
-                                duration: const Duration(milliseconds: 700),
-                                delay: true,
-                                child: TextField(
-                                  controller: _friendNameController,
-                                  decoration: InputDecoration(
-                                    labelText: 'Your Name',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        kButtonBorderRadius,
-                                      ),
-                                    ),
-                                    prefixIcon: const Icon(
-                                      Icons.person,
-                                      color: kPurpleColor,
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        kButtonBorderRadius,
-                                      ),
-                                      borderSide: const BorderSide(
-                                        color: kPurpleColor,
-                                        width: 2,
-                                      ),
+                                  SizedBox(height: tinySpacingHeight),
+                                  SlideInAnimation(
+                                    beginOffset: const Offset(0, 0.2),
+                                    duration: const Duration(milliseconds: 650),
+                                    delay: true,
+                                    child: Text(
+                                      'Your name will be visible to other shoppers',
+                                      style: captionStyle,
                                     ),
                                   ),
-                                  style: kBodyTextStyle,
-                                ),
+                                  SizedBox(height: smallSpacingHeight),
+                                  SlideInAnimation(
+                                    beginOffset: const Offset(0, 0.2),
+                                    duration: const Duration(milliseconds: 700),
+                                    delay: true,
+                                    child: TextField(
+                                      controller: _friendNameController,
+                                      decoration: InputDecoration(
+                                        labelText: 'Your Name',
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            borderRadius,
+                                          ),
+                                        ),
+                                        prefixIcon: Icon(
+                                          Icons.person,
+                                          color: kPurpleColor,
+                                          size: isSmallScreen ? 18.0 : 20.0,
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            borderRadius,
+                                          ),
+                                          borderSide: BorderSide(
+                                            color: kPurpleColor,
+                                            width: isSmallScreen ? 1.5 : 2.0,
+                                          ),
+                                        ),
+                                        contentPadding: EdgeInsets.symmetric(
+                                          vertical: isSmallScreen ? 12.0 : 16.0,
+                                          horizontal: isSmallScreen ? 10.0 : 12.0,
+                                        ),
+                                      ),
+                                      style: bodyStyle,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
 
-            const SizedBox(height: 16),
+                SizedBox(height: spacingHeight),
 
-            SlideInAnimation(
-              beginOffset: const Offset(0, 0.3),
-              duration: const Duration(milliseconds: 800),
-              delay: true,
-              child: PulseAnimation(
-                minScale: 1.0,
-                maxScale: 1.05,
-                duration: const Duration(milliseconds: 1800),
-                child: PrimaryButton(
-                  text: 'START SHOPPING',
-                  onPressed: () {
-                    if (_friendNameController.text.isNotEmpty) {
-                      sessionProvider.setCurrentUserName(
-                        _friendNameController.text,
-                      );
-                      sessionProvider.joinSession(
-                        _sessionId,
-                        _friendNameController.text,
-                      );
-                      context.router.push(const ProductListRoute());
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please enter your name')),
-                      );
-                    }
-                  },
-                  icon: Icons.shopping_bag_outlined,
-                  isFullWidth: true,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            SlideInAnimation(
-              beginOffset: const Offset(0, 0.2),
-              duration: const Duration(milliseconds: 850),
-              delay: true,
-              child: SecondaryButton(
-                text: 'CANCEL',
-                onPressed: () {
-                  context.router.pop();
-                },
-                isFullWidth: true,
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            SlideInAnimation(
-              beginOffset: const Offset(0, 0.1),
-              duration: const Duration(milliseconds: 900),
-              delay: true,
-              child: Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: kSuccessColor.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Icon(Icons.lock, size: 10, color: kSuccessColor),
+                SlideInAnimation(
+                  beginOffset: const Offset(0, 0.3),
+                  duration: const Duration(milliseconds: 800),
+                  delay: true,
+                  child: PulseAnimation(
+                    minScale: 1.0,
+                    maxScale: 1.05,
+                    duration: const Duration(milliseconds: 1800),
+                    child: PrimaryButton(
+                      text: 'START SHOPPING',
+                      onPressed: () {
+                        if (_friendNameController.text.isNotEmpty) {
+                          sessionProvider.setCurrentUserName(
+                            _friendNameController.text,
+                          );
+                          sessionProvider.joinSession(
+                            _sessionId,
+                            _friendNameController.text,
+                          );
+                          context.router.push(const ProductListRoute());
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Please enter your name',
+                                style: TextStyle(
+                                  fontSize: isSmallScreen ? 12.0 : 14.0,
+                                ),
+                              ),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                      },
+                      icon: Icons.shopping_bag_outlined,
+                      isFullWidth: true,
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Secure shopping session',
-                      style: kCaptionTextStyle.copyWith(
-                        color: kGreyColor1,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+
+                SizedBox(height: smallSpacingHeight),
+
+                SlideInAnimation(
+                  beginOffset: const Offset(0, 0.2),
+                  duration: const Duration(milliseconds: 850),
+                  delay: true,
+                  child: SecondaryButton(
+                    text: 'CANCEL',
+                    onPressed: () {
+                      context.router.pop();
+                    },
+                    isFullWidth: true,
+                  ),
+                ),
+
+                SizedBox(height: spacingHeight),
+
+                SlideInAnimation(
+                  beginOffset: const Offset(0, 0.1),
+                  duration: const Duration(milliseconds: 900),
+                  delay: true,
+                  child: Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(isSmallScreen ? 3.0 : 4.0),
+                          decoration: BoxDecoration(
+                            color: kSuccessColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(isSmallScreen ? 12.0 : 16.0),
+                          ),
+                          child: Icon(
+                            Icons.lock, 
+                            size: tinyIconSize, 
+                            color: kSuccessColor
+                          ),
+                        ),
+                        SizedBox(width: isSmallScreen ? 4.0 : 6.0),
+                        Text(
+                          'Secure shopping session',
+                          style: smallCaptionStyle,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

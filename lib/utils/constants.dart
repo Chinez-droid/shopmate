@@ -84,12 +84,6 @@ ThemeData getAppTheme() {
     colorScheme: ColorScheme.fromSeed(
       seedColor: kPurpleColor,
       brightness: Brightness.light,
-      // Optionally override specific colors if needed:
-      // primary: kPurpleColor,
-      // secondary: kSecondaryColor,
-      // background: kPrimaryColor,
-      // surface: kWhiteColor,
-      // error: kErrorColor,
     ),
     appBarTheme: AppBarTheme(
       backgroundColor: kPurpleColor,

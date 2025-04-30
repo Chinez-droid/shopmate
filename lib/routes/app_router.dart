@@ -10,7 +10,7 @@ part 'app_router.gr.dart'; // This links to the generated file
 
 @AutoRouterConfig()
 class AppRouter extends RootStackRouter {
-  // It MUST extend RootStackRouter
+  // As part of it's setup, It should extend RootStackRouter
 
   @override
   List<AutoRoute> get routes => [

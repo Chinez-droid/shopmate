@@ -1,8 +1,7 @@
-// Updated ShoppingSession class
 class ShoppingSession {
   final String sessionId;
   final String creatorName;
-  List<String> participants; // Replace friendName with a list of participants
+  List<String> participants;
   bool isActive;
   DateTime createdAt;
   String name;
@@ -10,7 +9,7 @@ class ShoppingSession {
   ShoppingSession({
     required this.sessionId,
     required this.creatorName,
-    List<String>? participants, // Optional list of participants
+    List<String>? participants,
     this.isActive = true,
     DateTime? createdAt,
     this.name = 'Shopping Session',

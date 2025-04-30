@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
+import 'responsive_widget.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
@@ -19,39 +20,62 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: isFullWidth ? double.infinity : null,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: kPurpleColor,
-          foregroundColor: kWhiteColor,
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(kButtonBorderRadius),
+    return ResponsiveBuilder(
+      builder: (context, sizingInfo) {
+        // Adjust padding and font size based on screen size
+        final verticalPadding = sizingInfo.screenSize.width < 360 ? 12.0 : 16.0;
+        final horizontalPadding =
+            sizingInfo.screenSize.width < 360 ? 18.0 : 24.0;
+        final iconSize = sizingInfo.screenSize.width < 360 ? 16.0 : 20.0;
+
+        final buttonTextStyle = kButtonTextStyle.copyWith(
+          fontSize:
+              sizingInfo.screenSize.width < 360
+                  ? 14.0
+                  : kButtonTextStyle.fontSize,
+        );
+
+        return SizedBox(
+          width: isFullWidth ? double.infinity : null,
+          child: ElevatedButton(
+            onPressed: isLoading ? null : onPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: kPurpleColor,
+              foregroundColor: kWhiteColor,
+              padding: EdgeInsets.symmetric(
+                vertical: verticalPadding,
+                horizontal: horizontalPadding,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(kButtonBorderRadius),
+              ),
+            ),
+            child:
+                isLoading
+                    ? SizedBox(
+                      height: iconSize,
+                      width: iconSize,
+                      child: CircularProgressIndicator(
+                        color: kWhiteColor,
+                        strokeWidth:
+                            sizingInfo.screenSize.width < 360 ? 2.0 : 2.5,
+                      ),
+                    )
+                    : icon != null
+                    ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(icon, size: iconSize),
+                        SizedBox(
+                          width: sizingInfo.screenSize.width < 360 ? 6 : 8,
+                        ),
+                        Text(text, style: buttonTextStyle),
+                      ],
+                    )
+                    : Text(text, style: buttonTextStyle),
           ),
-        ),
-        child:
-            isLoading
-                ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                    color: kWhiteColor,
-                    strokeWidth: 2.5,
-                  ),
-                )
-                : icon != null
-                ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icon, size: 20),
-                    const SizedBox(width: 8),
-                    Text(text, style: kButtonTextStyle),
-                  ],
-                )
-                : Text(text, style: kButtonTextStyle),
-      ),
+        );
+      },
     );
   }
 }
@@ -72,30 +96,54 @@ class SecondaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: isFullWidth ? double.infinity : null,
-      child: OutlinedButton(
-        onPressed: onPressed,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: kPurpleColor,
-          side: const BorderSide(color: kPurpleColor, width: 1.5),
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(kButtonBorderRadius),
+    return ResponsiveBuilder(
+      builder: (context, sizingInfo) {
+        final verticalPadding = sizingInfo.screenSize.width < 360 ? 10.0 : 14.0;
+        final horizontalPadding =
+            sizingInfo.screenSize.width < 360 ? 16.0 : 20.0;
+        final iconSize = sizingInfo.screenSize.width < 360 ? 16.0 : 18.0;
+
+        final buttonTextStyle = kSmallButtonTextStyle.copyWith(
+          fontSize:
+              sizingInfo.screenSize.width < 360
+                  ? 12.0
+                  : kSmallButtonTextStyle.fontSize,
+        );
+
+        return SizedBox(
+          width: isFullWidth ? double.infinity : null,
+          child: OutlinedButton(
+            onPressed: onPressed,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: kPurpleColor,
+              side: BorderSide(
+                color: kPurpleColor,
+                width: sizingInfo.screenSize.width < 360 ? 1.0 : 1.5,
+              ),
+              padding: EdgeInsets.symmetric(
+                vertical: verticalPadding,
+                horizontal: horizontalPadding,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(kButtonBorderRadius),
+              ),
+            ),
+            child:
+                icon != null
+                    ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(icon, size: iconSize),
+                        SizedBox(
+                          width: sizingInfo.screenSize.width < 360 ? 6 : 8,
+                        ),
+                        Text(text, style: buttonTextStyle),
+                      ],
+                    )
+                    : Text(text, style: buttonTextStyle),
           ),
-        ),
-        child:
-            icon != null
-                ? Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(icon, size: 18),
-                    const SizedBox(width: 8),
-                    Text(text, style: kSmallButtonTextStyle),
-                  ],
-                )
-                : Text(text, style: kSmallButtonTextStyle),
-      ),
+        );
+      },
     );
   }
 }
@@ -108,23 +156,36 @@ class StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive ? kSuccessColor : kGreyColor1;
+    return ResponsiveBuilder(
+      builder: (context, sizingInfo) {
+        final color = isActive ? kSuccessColor : kGreyColor1;
+        final horizontalPadding =
+            sizingInfo.screenSize.width < 360 ? 8.0 : 10.0;
+        final verticalPadding = sizingInfo.screenSize.width < 360 ? 3.0 : 4.0;
+        final fontSize = sizingInfo.screenSize.width < 360 ? 10.0 : 12.0;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: color,
-        ),
-      ),
+        return Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
+          ),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(
+              sizingInfo.screenSize.width < 360 ? 10 : 12,
+            ),
+            border: Border.all(color: color),
+          ),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.w500,
+              color: color,
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -135,7 +196,7 @@ class SessionCard extends StatelessWidget {
   final bool isActive;
   final DateTime createdAt;
   final int participantCount;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const SessionCard({
     super.key,
@@ -144,7 +205,7 @@ class SessionCard extends StatelessWidget {
     required this.isActive,
     required this.createdAt,
     required this.participantCount,
-    required this.onTap,
+    this.onTap,
   });
 
   String _formatDate(DateTime date) {
@@ -153,89 +214,111 @@ class SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      margin: const EdgeInsets.only(bottom: 12),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(kCardBorderRadius),
-      ),
-      child: InkWell(
-        onTap: isActive ? onTap : null,
-        borderRadius: BorderRadius.circular(kCardBorderRadius),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: kFadedPurple,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Icon(
-                      participantCount > 0 ? Icons.people : Icons.person,
-                      color: kPurpleColor,
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: kTitleTextStyle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          creatorName.startsWith('Created')
-                              ? creatorName
-                              : 'Created by $creatorName',
-                          style: kCaptionTextStyle,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return ResponsiveBuilder(
+      builder: (context, sizingInfo) {
+        final isSmallScreen = sizingInfo.screenSize.width < 360;
+        final iconContainerSize = isSmallScreen ? 40.0 : 48.0;
+        final iconSize = isSmallScreen ? 20.0 : 24.0;
+        final borderRadius = isSmallScreen ? 12.0 : 14.0;
+        final padding = isSmallScreen ? 12.0 : 16.0;
+
+        final titleStyle = kTitleTextStyle.copyWith(
+          fontSize: isSmallScreen ? 14.0 : kTitleTextStyle.fontSize,
+        );
+
+        final captionStyle = kCaptionTextStyle.copyWith(
+          fontSize: isSmallScreen ? 10.0 : kCaptionTextStyle.fontSize,
+        );
+
+        return Card(
+          elevation: 2,
+          margin: const EdgeInsets.only(bottom: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(kCardBorderRadius),
+          ),
+          child: InkWell(
+            onTap: isActive ? onTap : null,
+            borderRadius: BorderRadius.circular(kCardBorderRadius),
+            child: Padding(
+              padding: EdgeInsets.all(padding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      StatusBadge(
-                        text: isActive ? 'Active' : 'Completed',
-                        isActive: isActive,
+                      Container(
+                        width: iconContainerSize,
+                        height: iconContainerSize,
+                        decoration: BoxDecoration(
+                          color: kFadedPurple,
+                          borderRadius: BorderRadius.circular(borderRadius),
+                        ),
+                        child: Icon(
+                          participantCount > 0 ? Icons.people : Icons.person,
+                          color: kPurpleColor,
+                          size: iconSize,
+                        ),
                       ),
-                      const SizedBox(width: 8),
-                      Text(_formatDate(createdAt), style: kCaptionTextStyle),
+                      SizedBox(width: isSmallScreen ? 12 : 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: titleStyle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: isSmallScreen ? 2 : 4),
+                            Text(
+                              creatorName.startsWith('Created')
+                                  ? creatorName
+                                  : 'Created by $creatorName',
+                              style: captionStyle,
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
-                  if (participantCount > 0)
-                    Row(
-                      children: [
-                        Icon(Icons.group, size: 16, color: kGreyColor1),
-                        const SizedBox(width: 4),
-                        Text(
-                          '$participantCount ${participantCount == 1 ? 'friend' : 'friends'}',
-                          style: kCaptionTextStyle,
+                  SizedBox(height: isSmallScreen ? 12 : 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          StatusBadge(
+                            text: isActive ? 'Active' : 'Completed',
+                            isActive: isActive,
+                          ),
+                          SizedBox(width: isSmallScreen ? 6 : 8),
+                          Text(_formatDate(createdAt), style: captionStyle),
+                        ],
+                      ),
+                      if (participantCount > 0)
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.group,
+                              size: isSmallScreen ? 14 : 16,
+                              color: kGreyColor1,
+                            ),
+                            SizedBox(width: isSmallScreen ? 2 : 4),
+                            Text(
+                              '$participantCount ${participantCount == 1 ? 'friend' : 'friends'}',
+                              style: captionStyle,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                    ],
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -256,33 +339,40 @@ class EmptyStateView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 72, color: kGreyColor2),
-            const SizedBox(height: 16),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: kBodyTextStyle.copyWith(
-                color: kGreyColor1,
-                fontStyle: FontStyle.italic,
-              ),
+    return ResponsiveBuilder(
+      builder: (context, sizingInfo) {
+        final isSmallScreen = sizingInfo.screenSize.width < 360;
+        final iconSize = isSmallScreen ? 60.0 : 72.0;
+        final padding = isSmallScreen ? 24.0 : 32.0;
+
+        final messageStyle = kBodyTextStyle.copyWith(
+          color: kGreyColor1,
+          fontStyle: FontStyle.italic,
+          fontSize: isSmallScreen ? 14.0 : kBodyTextStyle.fontSize,
+        );
+
+        return Center(
+          child: Padding(
+            padding: EdgeInsets.all(padding),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: iconSize, color: kGreyColor2),
+                SizedBox(height: isSmallScreen ? 12 : 16),
+                Text(message, textAlign: TextAlign.center, style: messageStyle),
+                if (actionText != null && onAction != null) ...[
+                  SizedBox(height: isSmallScreen ? 20 : 24),
+                  SecondaryButton(
+                    text: actionText!,
+                    onPressed: onAction!,
+                    icon: Icons.add,
+                  ),
+                ],
+              ],
             ),
-            if (actionText != null && onAction != null) ...[
-              const SizedBox(height: 24),
-              SecondaryButton(
-                text: actionText!,
-                onPressed: onAction!,
-                icon: Icons.add,
-              ),
-            ],
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -301,22 +391,34 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(title, style: kTitleTextStyle),
-          if (actionText != null && onAction != null)
-            TextButton(
-              onPressed: onAction,
-              child: Text(
-                actionText!,
-                style: kSmallButtonTextStyle.copyWith(fontSize: 12),
-              ),
-            ),
-        ],
-      ),
+    return ResponsiveBuilder(
+      builder: (context, sizingInfo) {
+        final isSmallScreen = sizingInfo.screenSize.width < 360;
+        final verticalPadding = isSmallScreen ? 12.0 : 16.0;
+
+        final titleStyle = kTitleTextStyle.copyWith(
+          fontSize: isSmallScreen ? 16.0 : kTitleTextStyle.fontSize,
+        );
+
+        final actionStyle = kSmallButtonTextStyle.copyWith(
+          fontSize: isSmallScreen ? 10.0 : 12.0,
+        );
+
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: verticalPadding),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(title, style: titleStyle),
+              if (actionText != null && onAction != null)
+                TextButton(
+                  onPressed: onAction,
+                  child: Text(actionText!, style: actionStyle),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
