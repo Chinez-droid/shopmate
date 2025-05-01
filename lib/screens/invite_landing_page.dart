@@ -20,8 +20,6 @@ class InviteLandingPage extends StatefulWidget {
 class _InviteLandingPageState extends State<InviteLandingPage> {
   final _friendNameController = TextEditingController();
   late String _sessionId;
-  String _creatorName = 'Your friend';
-  int _participantCount = 0;
 
   @override
   void initState() {
@@ -36,16 +34,7 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
       listen: false,
     );
     if (sessionProvider.currentSession != null) {
-      _creatorName = sessionProvider.currentSession!.creatorName;
-      _participantCount = sessionProvider.currentSession!.participants.length;
-    } else {
-      
-      // Generate a random creator name and participant count
-      _creatorName = faker.person.firstName();
-      _participantCount = faker.randomGenerator.integer(
-        3,
-      ); 
-    }
+    } else {}
   }
 
   @override
@@ -69,27 +58,26 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
         final tinySpacingHeight = isSmallScreen ? 4.0 : 6.0;
         final avatarRadius = isSmallScreen ? 28.0 : 32.0;
         final iconSize = isSmallScreen ? 30.0 : 36.0;
-        final smallIconSize = isSmallScreen ? 12.0 : 14.0;
         final tinyIconSize = isSmallScreen ? 8.0 : 10.0;
         final borderRadius = isSmallScreen ? 10.0 : 12.0;
-        
+
         final headingStyle = kSubheadingTextStyle.copyWith(
           fontWeight: FontWeight.w600,
           fontSize: isSmallScreen ? 16.0 : kSubheadingTextStyle.fontSize,
         );
-        
+
         final bodyStyle = kBodyTextStyle.copyWith(
           fontSize: isSmallScreen ? 14.0 : kBodyTextStyle.fontSize,
         );
-        
+
         final titleStyle = kTitleTextStyle.copyWith(
           fontSize: isSmallScreen ? 16.0 : kTitleTextStyle.fontSize,
         );
-        
+
         final captionStyle = kCaptionTextStyle.copyWith(
           fontSize: isSmallScreen ? 10.0 : kCaptionTextStyle.fontSize,
         );
-        
+
         final smallCaptionStyle = kCaptionTextStyle.copyWith(
           color: kGreyColor1,
           fontSize: isSmallScreen ? 10.0 : 12.0,
@@ -142,7 +130,9 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
                                     child: PulseAnimation(
                                       minScale: 1.0,
                                       maxScale: 1.1,
-                                      duration: const Duration(milliseconds: 1500),
+                                      duration: const Duration(
+                                        milliseconds: 1500,
+                                      ),
                                       child: CircleAvatar(
                                         radius: avatarRadius,
                                         backgroundColor: kFadedPurple,
@@ -165,55 +155,7 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
-                                  SizedBox(height: smallSpacingHeight),
-                                  SlideInAnimation(
-                                    beginOffset: const Offset(0, 0.2),
-                                    duration: const Duration(milliseconds: 800),
-                                    delay: true,
-                                    child: Text(
-                                      '$_creatorName has invited you to join their shopping cart!',
-                                      style: bodyStyle,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  SizedBox(height: smallSpacingHeight),
-                                  if (_participantCount > 0)
-                                    SlideInAnimation(
-                                      beginOffset: const Offset(0, 0.2),
-                                      duration: const Duration(milliseconds: 900),
-                                      delay: true,
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: isSmallScreen ? 10.0 : 12.0,
-                                          vertical: isSmallScreen ? 4.0 : 6.0,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: kFadedPurple,
-                                          borderRadius: BorderRadius.circular(
-                                            borderRadius,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(
-                                              Icons.people,
-                                              size: smallIconSize,
-                                              color: kPurpleColor,
-                                            ),
-                                            SizedBox(width: isSmallScreen ? 4.0 : 6.0),
-                                            Text(
-                                              '$_participantCount other ${_participantCount == 1 ? 'person' : 'people'} shopping',
-                                              style: TextStyle(
-                                                color: kPurpleColor,
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: isSmallScreen ? 10.0 : 12.0,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                  // Removed the creator name message and participants bar
                                 ],
                               ),
                             ),
@@ -286,7 +228,8 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
                                         ),
                                         contentPadding: EdgeInsets.symmetric(
                                           vertical: isSmallScreen ? 12.0 : 16.0,
-                                          horizontal: isSmallScreen ? 10.0 : 12.0,
+                                          horizontal:
+                                              isSmallScreen ? 10.0 : 12.0,
                                         ),
                                       ),
                                       style: bodyStyle,
@@ -373,12 +316,14 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
                           padding: EdgeInsets.all(isSmallScreen ? 3.0 : 4.0),
                           decoration: BoxDecoration(
                             color: kSuccessColor.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(isSmallScreen ? 12.0 : 16.0),
+                            borderRadius: BorderRadius.circular(
+                              isSmallScreen ? 12.0 : 16.0,
+                            ),
                           ),
                           child: Icon(
-                            Icons.lock, 
-                            size: tinyIconSize, 
-                            color: kSuccessColor
+                            Icons.lock,
+                            size: tinyIconSize,
+                            color: kSuccessColor,
                           ),
                         ),
                         SizedBox(width: isSmallScreen ? 4.0 : 6.0),
