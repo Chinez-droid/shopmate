@@ -49,7 +49,7 @@ class ConfirmationScreen extends StatelessWidget {
             title: Text(
               'Order Confirmation',
               style: TextStyle(
-                fontFamily: 'Raleway',
+                fontFamily: 'Roboto',
                 fontSize: titleFontSize,
                 fontWeight: FontWeight.w600,
                 color: kWhiteColor,

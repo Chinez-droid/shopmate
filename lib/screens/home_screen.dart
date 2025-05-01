@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen>
                     child: Text(
                       'Shopmate',
                       style: TextStyle(
-                        fontFamily: 'Raleway',
+                        fontFamily: 'Roboto',
                         fontSize: isSmallScreen ? 20.0 : 22.0,
                         fontWeight: FontWeight.w600,
                         color: kWhiteColor,

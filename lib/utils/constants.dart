@@ -20,49 +20,49 @@ const kDefaultPadding = 16.0;
 
 // Text Styles
 const kHeadingTextStyle = TextStyle(
-  fontFamily: 'Raleway',
+  fontFamily: 'Roboto',
   fontSize: 32,
   fontWeight: FontWeight.w500,
   color: kSecondaryColor,
 );
 
 const kSubheadingTextStyle = TextStyle(
-  fontFamily: 'Raleway',
+  fontFamily: 'Roboto',
   fontSize: 24,
   fontWeight: FontWeight.w400,
   color: kSecondaryColor,
 );
 
 const kTitleTextStyle = TextStyle(
-  fontFamily: 'Raleway',
+  fontFamily: 'Roboto',
   fontSize: 18,
   fontWeight: FontWeight.w600,
   color: kSecondaryColor,
 );
 
 const kBodyTextStyle = TextStyle(
-  fontFamily: 'Raleway',
+  fontFamily: 'Roboto',
   fontSize: 16,
   fontWeight: FontWeight.w400,
   color: kBlackColor,
 );
 
 const kCaptionTextStyle = TextStyle(
-  fontFamily: 'Raleway',
+  fontFamily: 'Roboto',
   fontSize: 14,
   fontWeight: FontWeight.w400,
   color: kGreyColor1,
 );
 
 const kButtonTextStyle = TextStyle(
-  fontFamily: 'Raleway',
+  fontFamily: 'Roboto',
   fontSize: 16,
   fontWeight: FontWeight.w500,
   color: kWhiteColor,
 );
 
 const kSmallButtonTextStyle = TextStyle(
-  fontFamily: 'Raleway',
+  fontFamily: 'Roboto',
   fontSize: 14,
   fontWeight: FontWeight.w500,
   color: kPurpleColor,
@@ -79,7 +79,7 @@ final kCardShadow = BoxShadow(
 ThemeData getAppTheme() {
   return ThemeData(
     useMaterial3: true,
-    fontFamily: 'Raleway',
+    fontFamily: 'Roboto',
     scaffoldBackgroundColor: kPrimaryColor,
     colorScheme: ColorScheme.fromSeed(
       seedColor: kPurpleColor,

@@ -179,7 +179,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       title: Text(
         isCreator ? 'Products (Creator)' : 'Products (Friend)',
         style: const TextStyle(
-          fontFamily: 'Raleway',
+          fontFamily: 'Roboto',
           fontSize: 22,
           fontWeight: FontWeight.w600,
           color: kWhiteColor,

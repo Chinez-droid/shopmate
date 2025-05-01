@@ -138,7 +138,7 @@ class _CartInviteScreenState extends State<CartInviteScreen> {
         title: Text(
           !_sessionCreated ? 'Create Shopping Cart' : 'Share Cart',
           style: const TextStyle(
-            fontFamily: 'Raleway',
+            fontFamily: 'Roboto',
             fontSize: 22,
             fontWeight: FontWeight.w600,
             color: kWhiteColor,

@@ -101,7 +101,7 @@ class _InviteLandingPageState extends State<InviteLandingPage> {
             title: Text(
               'Join Session',
               style: TextStyle(
-                fontFamily: 'Raleway',
+                fontFamily: 'Roboto',
                 fontSize: titleFontSize,
                 fontWeight: FontWeight.w600,
                 color: kWhiteColor,

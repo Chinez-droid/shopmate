@@ -72,7 +72,7 @@ class _SharedCartScreenState extends State<SharedCartScreen> {
               title: Text(
                 'Shared Cart',
                 style: TextStyle(
-                  fontFamily: 'Raleway',
+                  fontFamily: 'Roboto',
                   fontSize: titleFontSize,
                   fontWeight: FontWeight.w600,
                   color: kWhiteColor,

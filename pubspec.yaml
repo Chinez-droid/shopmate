@@ -83,13 +83,13 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Raleway
-      fonts:
-        - asset: assets/fonts/Raleway-Regular.ttf
-         
-        - asset: assets/fonts/Raleway-Medium.ttf
-         
-        - asset: assets/fonts/Raleway-SemiBold.ttf
+  - family: Roboto
+    fonts:
+      - asset: assets/fonts/Roboto-Regular.ttf
+      - asset: assets/fonts/Roboto-Medium.ttf
+        
+      
+
          
   #
   # For details regarding fonts from package dependencies,
